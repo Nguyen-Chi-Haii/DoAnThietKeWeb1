@@ -1,0 +1,32 @@
+﻿.cart-empty-page {
+    min-height: 80vh; /* Chiếm ít nhất 80% chiều cao trình duyệt */
+    display: flex;
+    align-items: center; /* Canh giữa theo chiều dọc */
+    justify-content: center; /* Canh giữa theo chiều ngang */
+    text-align: center;
+    padding-top: 100px; /* Cách header một đoạn */
+}
+
+    .cart-empty-page img {
+        width: 200px;
+        height: 200px;
+        margin-bottom: 2rem;
+    }
+
+    .cart-empty-page h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .cart-empty-page p {
+        color: #555;
+        margin-bottom: 1.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .cart-empty-page .btn {
+        padding: 0.8rem 2rem;
+        font-size: 1.1rem;
+    }
