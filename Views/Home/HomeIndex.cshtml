@@ -1,4 +1,5 @@
-﻿<section class="home">
+﻿@model IEnumerable<DoAnThietKeWeb1.Models.Product>
+<section class="home">
 
     <div class="slides-container">
 
@@ -42,33 +43,41 @@
 
 </section>
 
-<section class="banner-container">
+<section class="products">
 
-    <div class="banner">
-        <img src="~/image/banner-1.jpg" alt="">
-        <div class="content">
-            <span>limited sales</span>
-            <h3>upto 50% off</h3>
-            <a href="#" class="btn">shop now</a>
-        </div>
-    </div>
+    <h1 class="title"> our <span>products</span> </h1>
 
-    <div class="banner">
-        <img src="~/image/banner-2.jpg" alt="">
-        <div class="content">
-            <span>limited sales</span>
-            <h3>upto 50% off</h3>
-            <a href="#" class="btn">shop now</a>
-        </div>
-    </div>
-
-    <div class="banner">
-        <img src="~/image/banner-3.jpg" alt="">
-        <div class="content">
-            <span>limited sales</span>
-            <h3>upto 50% off</h3>
-            <a href="#" class="btn">shop now</a>
-        </div>
+    <div class="box-container">
+        @foreach (var product in Model)
+        {
+            <div class="box">
+                <div class="icons">
+                    <a href="#" class="fas fa-shopping-cart"></a>
+                    <a href="#" class="fas fa-heart"></a>
+                    <a href="#" class="fas fa-eye"></a>
+                </div>
+                <div class="image">
+                    <img src="@product.Image" alt="@product.ProductName" />
+                </div>
+                <div class="content">
+                    <h3>@product.ProductName</h3>
+                    <div class="price">@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                    <div class="stars">
+                        @{
+                            int stars = (int)Math.Floor(product.AverageRating ?? 0);
+                            for (int i = 0; i < stars; i++)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            for (int i = stars; i < 5; i++)
+                            {
+                                <i class="far fa-star"></i>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
 </section>

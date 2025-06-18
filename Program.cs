@@ -1,7 +1,22 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using DoAnThietKeWeb1.Data;
+using DoAnThietKeWeb1.Models.Interfaces;
+using DoAnThietKeWeb1.Models.Services;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<GorocoDatabaseContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("GorocoShopDbContextConnection")));
+
+builder.Services.AddScoped<IHomeRepository, HomeRepository>();
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+builder.Services.AddScoped<IReviewRepository,ReviewRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IShopRepository, ShopRepository>();
+builder.Services.AddScoped<IAboutRepository, AboutRepository>();
 
 var app = builder.Build();
 
