@@ -54,7 +54,7 @@
                 <div class="icons">
                     <a href="#" class="fas fa-shopping-cart"></a>
                     <a href="#" class="fas fa-heart"></a>
-                    <a href="#" class="fas fa-eye"></a>
+                    <a asp-controller="Shop" asp-action="Shopdetail" asp-route-id="@product.ProductId" class="fas fa-eye"></a>
                 </div>
                 <div class="image">
                     <img src="@product.Image" alt="@product.ProductName" />

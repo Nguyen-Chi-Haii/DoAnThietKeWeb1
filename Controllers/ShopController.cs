@@ -23,5 +23,14 @@ namespace DoAnThietKeWeb1.Controllers
             var products = _shopRepository.GetProductsByCategory(category);
             return View("ShopIndex", products);
         }
+        public IActionResult ShopDetail(string id)
+        {
+            var product = _context.Products
+             .FirstOrDefault(p => p.ProductId == id);
+
+            if (product == null) return NotFound();
+
+            return View(product);
+        }
     }
 }
