@@ -6,7 +6,9 @@
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     margin: 200px auto;
+    position: relative;
 }
+
 
 .product-image {
     flex: 1;
@@ -35,6 +37,8 @@
     padding: 30px;
     position: relative;
 }
+
+
 
 .product-name {
     font-size: 2rem;
@@ -114,7 +118,28 @@
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
     }
-
+.Favourite-button{
+    background: #FF4081;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    .Favourite-button i {
+        margin-right: 10px;
+    }
+    .Favourite-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+    }}
 .divider {
     height: 1px;
     background: linear-gradient(90deg, transparent, #4CAF50, transparent);

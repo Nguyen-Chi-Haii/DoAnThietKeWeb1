@@ -173,7 +173,9 @@
     width: 50px;
     text-align: right;
     color: #777;
+    font-size: 1.5rem;
 }
+
 
 .filter-bar {
     background: white;
@@ -182,6 +184,7 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     margin-bottom: 30px;
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 15px;
 }
@@ -201,6 +204,7 @@
     transition: all 0.3s ease;
     font-size: 0.9rem;
     border: 1px solid #C8E6C9;
+    font-size: 1.5rem;
 }
 
     .filter-option:hover, .filter-option.active {
@@ -237,19 +241,29 @@
     padding: 25px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
     .review-box:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
-
+.review-content {
+    flex: 1;
+}
 .user-info {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
     border-bottom: 1px solid #eee;
+}
+.user-name-and-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .user-avatar {
@@ -316,6 +330,10 @@
     color: #2196F3;
     text-decoration: none;
     font-weight: 500;
+    color: #2E7D32;
+    font-size: 1.5rem;
+    font-weight: 600;
+    
 }
 
     .product-link:hover {
@@ -371,7 +389,7 @@
     width: 80px;
     font-weight: 500;
     color: #555;
-
+    font-size: 1.5rem;
 }
 
 .bar-container {
@@ -391,7 +409,7 @@
 
 .bar-count span {
     width: 50px;
-    font-size: 1.1rem;
+    font-size: 2.5rem;
     text-align: right;
     color: #777;
 }
@@ -411,6 +429,7 @@
     font-weight: bold;
     color: #bac34e;
     margin-right: 10px;
+    font-size: 1.5rem;
 }
 
 .filter-option {
@@ -420,7 +439,7 @@
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.9rem;
+    font-size: 1.5rem;
     border: 1px solid #C8E6C9;
 }
 

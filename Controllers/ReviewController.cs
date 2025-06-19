@@ -23,7 +23,6 @@ namespace DoAnThietKeWeb1.Controllers
             // Fix CS0428 and CS8619 by ensuring Count is invoked and nullability is handled
             ViewBag.TotalReviews = reviews.Count();
             ViewBag.AverageRating = reviews.Any() ? reviews.Average(r => r.Rating ?? 0) : 0;
-
             ViewBag.StarCounts = Enumerable.Range(1, 5)
                 .Reverse()
                 .ToDictionary(star => star, star => reviews.Count(r => r.Rating == star));

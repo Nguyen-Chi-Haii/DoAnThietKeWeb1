@@ -87,40 +87,42 @@
                 <div class="review-box"
                      data-rating="@review.Rating"
                      data-has-comment="@(string.IsNullOrWhiteSpace(review.Comment) ? "false" : "true")">
-                    <div class="user-info">
-                        <div class="user-avatar">
-                            <img src="~/image/pic-3.png" alt="Avatar">
-                        </div>
-                        <div class="user-details">
-                            <h3 class="username">Người dùng ẩn danh</h3>
-                            <div class="review-date">@review.ReviewDate?.ToString("dd/MM/yyyy")</div>
-                            <div class="rating">
-                                <div class="stars">
-                                    @{
-                                        int fullStars = review.Rating ?? 0;
-                                        for (int i = 0; i < fullStars; i++)
-                                        {
-                                            <i class="fas fa-star"></i>
+                    <div class="review-content">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <img src="~/image/pic-3.png" alt="Avatar">
+                            </div>
+                            <div class="user-name-and-details">
+                                <h3 class="username">Người dùng ẩn danh</h3>
+                                <div class="review-date">@review.ReviewDate?.ToString("dd/MM/yyyy")</div>
+                                <div class="rating">
+                                    <div class="stars">
+                                        @{
+                                            int fullStars = review.Rating ?? 0;
+                                            for (int i = 0; i < fullStars; i++)
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            for (int j = fullStars; j < 5; j++)
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
                                         }
-                                        for (int i = fullStars; i < 5; i++)
-                                        {
-                                            <i class="far fa-star"></i>
-                                        }
-                                    }
+                                    </div>
+                                    <div class="rating-value">
+                                        @((review.Rating ?? 0).ToString("0.0"))
+                                    </div>
                                 </div>
-                                <div class="rating-value">@review.Rating?.ToString("0.0")</div>
                             </div>
                         </div>
+
+                        <p class="comment">
+                            @review.Comment
+                        </p>
                     </div>
-                    <p class="comment">
-                        @review.Comment
-                    </p>
-                    @if (review.Product != null)
-                    {
-                        <a href="@Url.Action("Details", "Product", new { id = review.Product.ProductId })" class="product-link">
-                            Xem sản phẩm: @review.Product.ProductName
-                        </a>
-                    }
+                     <a href="@Url.Action("Details", "Product", new { id = review.Product.ProductId })" class="product-link">
+                        Xem sản phẩm: @review.Product.ProductName
+                      </a>
                 </div>
             }
         }

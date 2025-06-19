@@ -13,6 +13,7 @@ namespace DoAnThietKeWeb1.Models.Services
         public IEnumerable<Review> GetAllReviews()
         {
             return _context.Reviews
+            .Include(r => r.Product)
             .OrderByDescending(r => r.ReviewDate)
             .ToList();
 

@@ -2,5 +2,6 @@
 {
     public interface IAboutRepository
     {
+        IEnumerable<Gallery> GetGallery();
     }
 }

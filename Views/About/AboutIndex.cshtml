@@ -1,4 +1,5 @@
-﻿<div class="heading">
+﻿@model IEnumerable<DoAnThietKeWeb1.Models.Gallery>
+<div class="heading">
     <h1>about us</h1>
     <p> <a asp-action="HomeIndex" asp-controller="Home">home >></a> about </p>
 </div>
@@ -24,61 +25,17 @@
     <h1 class="title"> our <span>gallery</span> <a href="#">view all >></a> </h1>
 
     <div class="box-container">
-
-        <div class="box">
-            <img src="~/image/gallery-img-1.jpg" alt="">
-            <div class="icons">
-                <a href="#" class="fas fa-eye"></a>
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-share-alt"></a>
+        @foreach (var image in Model)
+        {
+            <div class="box">
+                <img src="@Url.Content(image.Path)" alt="@image.ImageName" />
+                <div class="icons">
+                    <a href="#" class="fas fa-eye"></a>
+                    <a href="#" class="fas fa-heart"></a>
+                    <a href="#" class="fas fa-share-alt"></a>
+                </div>
             </div>
-        </div>
-
-        <div class="box">
-            <img src="~/image/gallery-img-2.jpg" alt="">
-            <div class="icons">
-                <a href="#" class="fas fa-eye"></a>
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-share-alt"></a>
-            </div>
-        </div>
-
-        <div class="box">
-            <img src="~/image/gallery-img-3.jpg" alt="">
-            <div class="icons">
-                <a href="#" class="fas fa-eye"></a>
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-share-alt"></a>
-            </div>
-        </div>
-
-        <div class="box">
-            <img src="~/image/gallery-img-4.jpg" alt="">
-            <div class="icons">
-                <a href="#" class="fas fa-eye"></a>
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-share-alt"></a>
-            </div>
-        </div>
-
-        <div class="box">
-            <img src="~/image/gallery-img-5.jpg" alt="">
-            <div class="icons">
-                <a href="#" class="fas fa-eye"></a>
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-share-alt"></a>
-            </div>
-        </div>
-
-        <div class="box">
-            <img src="~/image/gallery-img-6.jpg" alt="">
-            <div class="icons">
-                <a href="#" class="fas fa-eye"></a>
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-share-alt"></a>
-            </div>
-        </div>
-
+        }
     </div>
 
 </section>
