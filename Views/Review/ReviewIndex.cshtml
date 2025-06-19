@@ -1,4 +1,13 @@
-﻿<div class="heading">
+﻿@model List<DoAnThietKeWeb1.Models.Review>
+@{
+    var starCounts = ViewBag.StarCounts as Dictionary<int, int>;
+    int total = ViewBag.TotalReviews ?? 0;
+    double average = ViewBag.AverageRating ?? 0;
+}
+
+
+
+<div class="heading">
     <h1>client's review</h1>
     <p> <a asp-controller ="Home" asp-action="HomeIndex">home >></a> review </p>
 </div>
@@ -31,72 +40,139 @@
 
 </section>
 
-<section class="review">
+    <div class="container">
+    <div class="review-summary">
+        <div class="summary-header">
+            <div class="average-rating">
+                @average.ToString("0.0") <span style="font-size: 1.5rem">/5</span>
+            </div>
+            <div class="rating-distribution">
+                @foreach (var star in starCounts.Keys)
+                {
+                    var count = starCounts[star];
+                    var percent = total > 0 ? (double)count / total * 100 : 0;
 
-    <div class="box">
-        <div class="user">
-            <img src="~/image/pic-1.png" alt="">
-            <div class="info">
-                <h3>john deo</h3>
-                <span>happy client</span>
+                    <div class="distribution-bar">
+                        <div class="star-label">@star sao</div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: @percent.ToString("0")%; background-color: #ffc107; height: 8px;"></div>
+                        </div>
+                        <div class="bar-count"><span>@count</span></div>
+                    </div>
+                }
             </div>
         </div>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem molestiae expedita culpa officiis harum impedit vel! Odit saepe similique vero!</p>
     </div>
 
-    <div class="box">
-        <div class="user">
-            <img src="~/image/pic-2.png" alt="">
-            <div class="info">
-                <h3>john deo</h3>
-                <span>happy client</span>
-            </div>
+        <div class="filter-bar">
+            <span class="filter-title">Lọc đánh giá:</span>
+            <span class="filter-option active">Tất cả</span>
+            <span class="filter-option">5 sao</span>
+            <span class="filter-option">4 sao</span>
+            <span class="filter-option">3 sao</span>
+            <span class="filter-option">Có bình luận</span>
         </div>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem molestiae expedita culpa officiis harum impedit vel! Odit saepe similique vero!</p>
-    </div>
 
-    <div class="box">
-        <div class="user">
-            <img src="~/image/pic-3.png" alt="">
-            <div class="info">
-                <h3>john deo</h3>
-                <span>happy client</span>
+    <div class="reviews-container">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="Noreview">
+                Chưa có đánh giá nào cho từ khách hàng này.
             </div>
-        </div>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem molestiae expedita culpa officiis harum impedit vel! Odit saepe similique vero!</p>
+        }
+        else
+        {
+            foreach (var review in Model.Take(10))
+            {
+                <div class="review-box"
+                     data-rating="@review.Rating"
+                     data-has-comment="@(string.IsNullOrWhiteSpace(review.Comment) ? "false" : "true")">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <img src="~/image/pic-3.png" alt="Avatar">
+                        </div>
+                        <div class="user-details">
+                            <h3 class="username">Người dùng ẩn danh</h3>
+                            <div class="review-date">@review.ReviewDate?.ToString("dd/MM/yyyy")</div>
+                            <div class="rating">
+                                <div class="stars">
+                                    @{
+                                        int fullStars = review.Rating ?? 0;
+                                        for (int i = 0; i < fullStars; i++)
+                                        {
+                                            <i class="fas fa-star"></i>
+                                        }
+                                        for (int i = fullStars; i < 5; i++)
+                                        {
+                                            <i class="far fa-star"></i>
+                                        }
+                                    }
+                                </div>
+                                <div class="rating-value">@review.Rating?.ToString("0.0")</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="comment">
+                        @review.Comment
+                    </p>
+                    @if (review.Product != null)
+                    {
+                        <a href="@Url.Action("Details", "Product", new { id = review.Product.ProductId })" class="product-link">
+                            Xem sản phẩm: @review.Product.ProductName
+                        </a>
+                    }
+                </div>
+            }
+        }
     </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterOptions = document.querySelectorAll('.filter-option');
+        const reviews = document.querySelectorAll('.review-box');
 
-    <div class="box">
-        <div class="user">
-            <img src="~/image/pic-4.png" alt="">
-            <div class="info">
-                <h3>john deo</h3>
-                <span>happy client</span>
-            </div>
-        </div>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem molestiae expedita culpa officiis harum impedit vel! Odit saepe similique vero!</p>
-    </div>
+        filterOptions.forEach(option => {
+            option.addEventListener('click', function () {
+                // Remove 'active' from all options
+                filterOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
 
-    <div class="box">
-        <div class="user">
-            <img src="~/image/pic-5.png" alt="">
-            <div class="info">
-                <h3>john deo</h3>
-                <span>happy client</span>
-            </div>
-        </div>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem molestiae expedita culpa officiis harum impedit vel! Odit saepe similique vero!</p>
-    </div>
+                const filterText = this.textContent.trim();
 
-    <div class="box">
-        <div class="user">
-            <img src="~/image/pic-6.png" alt="">
-            <div class="info">
-                <h3>john deo</h3>
-                <span>happy client</span>
-            </div>
-        </div>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem molestiae expedita culpa officiis harum impedit vel! Odit saepe similique vero!</p>
-    </div>
+                reviews.forEach(review => {
+                    const rating = parseInt(review.getAttribute('data-rating'));
+                    const hasComment = review.getAttribute('data-has-comment') === 'true';
 
-</section>
+                    let show = true;
+
+                    switch (filterText) {
+                        case 'Tất cả':
+                            show = true;
+                            break;
+                        case '5 sao':
+                            show = rating === 5;
+                            break;
+                        case '4 sao':
+                            show = rating === 4;
+                            break;
+                        case '3 sao':
+                            show = rating === 3;
+                            break;
+                        case 'Có bình luận':
+                            show = hasComment;
+                            break;
+                    }
+
+                    review.style.display = show ? 'block' : 'none';
+                });
+
+                // Nếu tất cả review đều bị ẩn → hiển thị "Chưa có đánh giá"
+                const anyVisible = Array.from(reviews).some(r => r.style.display !== 'none');
+                const noReviewEl = document.querySelector('.Noreview');
+                if (noReviewEl) {
+                    noReviewEl.style.display = anyVisible ? 'none' : 'flex';
+                }
+            });
+        });
+    });
+</script>
