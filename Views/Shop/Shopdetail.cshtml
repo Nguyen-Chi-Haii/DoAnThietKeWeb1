@@ -40,15 +40,22 @@
 
         <div class="price" style="font-size:3.5rem">@Model.Price.ToString("N0") VNĐ / Kg</div>  
 
-        <form method="post" asp-controller="Cart" asp-action="AddToCart">  
-            <input type="hidden" name="productId" value="@Model.ProductId" />  
-            <button type="submit" class="add-to-cart">  
-                <i class="fas fa-shopping-cart" style="font-size:1.5rem"></i> Thêm vào giỏ hàng  
-            </button>  
+        <!-- Form Thêm vào giỏ hàng -->
+        <form method="post" asp-controller="Cart" asp-action="AddToCart" class="add-to-cart-form">
+            <input type="hidden" name="productId" value="@Model.ProductId" />
+            <button type="submit" class="btn-add-to-cart">
+                <i class="fas fa-shopping-cart" style="font-size:1.5rem"></i> Thêm vào giỏ hàng
+            </button>
+        </form>
+
+        <!-- Form Yêu thích -->
+        <form method="post" asp-controller="Favourite" asp-action="AddToFavourite" class="add-to-favourite-form">
+            <input type="hidden" name="productId" value="@Model.ProductId" />
             <button type="submit" class="Favourite-button">
                 <i class="fas fa-heart" style="font-size:1.5rem"></i> Yêu thích
             </button>
-        </form>  
+        </form>
+  
 
         <div class="divider"></div>  
 

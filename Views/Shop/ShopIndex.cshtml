@@ -48,7 +48,12 @@
         {
             <div class="box">
                 <div class="icons">
-                    <a href="#" class="fas fa-shopping-cart"></a>
+                    <a asp-controller="Cart"
+                       asp-action="AddToCart"
+                       asp-route-productId="@product.ProductId"
+                       class="add-to-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                    </a>
                     <a href="#" class="fas fa-heart"></a>
                     <a asp-controller="Shop" asp-action="Shopdetail" asp-route-id="@product.ProductId" class="fas fa-eye"></a>
                 </div>

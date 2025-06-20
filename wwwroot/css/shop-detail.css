@@ -93,7 +93,7 @@
     font-weight: bold;
 }
 
-.add-to-cart {
+.btn-add-to-cart {
     background: #bac34e;
     color: white;
     border: none;
@@ -110,11 +110,11 @@
     justify-content: center;
 }
 
-    .add-to-cart i {
+    .btn-add-to-cart i {
         margin-right: 10px;
     }
 
-    .add-to-cart:hover {
+    .btn-add-to-cart:hover {
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
     }

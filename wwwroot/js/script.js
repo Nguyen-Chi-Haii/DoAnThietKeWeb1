@@ -1,74 +1,183 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
-    // Lấy các phần tử DOM
-    const menuBtn = document.getElementById('menu-btn');
-    const searchBtn = document.getElementById('search-btn');
-    const cartBtn = document.getElementById('cart-btn');
-    const loginBtn = document.getElementById('login-btn');
+﻿window.onscroll = () => {
+    document.querySelector('.search-form')?.classList.remove('active');
+    document.querySelector('.shopping-cart')?.classList.remove('active');
+    document.querySelector('.login-form')?.classList.remove('active');
+    document.querySelector('.navbar')?.classList.remove('active');
+};
 
-    const navbar = document.querySelector('.navbar');
-    const searchForm = document.querySelector('.search-form');
-    const shoppingCart = document.querySelector('.shopping-cart');
-    const loginPopup = document.querySelector('.login-form');
+let slides = document.querySelectorAll('.home .slides-container .slide');
+let index = 0;
 
-    // Toggle menu
-    menuBtn.addEventListener('click', () => {
-        navbar.classList.toggle('active');
-        searchForm.classList.remove('active');
-        shoppingCart.classList.remove('active');
-        loginPopup.classList.remove('active');
-    });
+function next() {
+    slides[index].classList.remove('active');
+    index = (index + 1) % slides.length;
+    slides[index].classList.add('active');
+}
 
-    // Toggle search form
-    searchBtn.addEventListener('click', () => {
-        searchForm.classList.toggle('active');
-        navbar.classList.remove('active');
-        shoppingCart.classList.remove('active');
-        loginPopup.classList.remove('active');
-    });
+function prev() {
+    slides[index].classList.remove('active');
+    index = (index - 1 + slides.length) % slides.length;
+    slides[index].classList.add('active');
+}
+document.addEventListener('DOMContentLoaded', function () {
+    bindAddToCartEvents();
+    bindRemoveItemEvents();
+    setupGlobalEventListeners(); // Thay thế bindCartToggle
 
-    // Toggle shopping cart
-    cartBtn.addEventListener('click', () => {
-        shoppingCart.classList.toggle('active');
-        navbar.classList.remove('active');
-        searchForm.classList.remove('active');
-        loginPopup.classList.remove('active');
-    });
+    function bindAddToCartEvents() {
+        // 1. Với thẻ <a>
+        document.querySelectorAll('.add-to-cart').forEach(element => {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
 
-    // Toggle login popup
-    loginBtn.addEventListener('click', () => {
-        loginPopup.classList.toggle('active');
-        navbar.classList.remove('active');
-        searchForm.classList.remove('active');
-        shoppingCart.classList.remove('active');
-    });
+                let url = element.getAttribute('href') || element.dataset.url;
+                let productId = element.dataset.productId;
 
-    // Đóng các popup khi click ra ngoài
-    document.addEventListener('click', (e) => {
-        if (!loginPopup.contains(e.target) && e.target !== loginBtn) {
-            loginPopup.classList.remove('active');
+                if (!url && productId) {
+                    url = `/Cart/AddToCart?productId=${productId}`;
+                }
+
+                addToCart(url);
+            });
+        });
+
+        // 2. Với thẻ <form>
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault(); // Ngăn form submit mặc định
+
+                const formData = new FormData(form);
+                const productId = formData.get("productId");
+
+                const url = `/Cart/AddToCart?productId=${productId}`;
+
+                addToCart(url);
+            });
+        });
+
+        function addToCart(url) {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity: 1 })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast("Đã thêm sản phẩm vào giỏ hàng!");
+                        refreshCartPopup();
+                    } else {
+                        showToast("Thêm sản phẩm thất bại!", 'error');
+                    }
+                });
         }
-        if (!searchForm.contains(e.target) && e.target !== searchBtn) {
-            searchForm.classList.remove('active');
-        }
-        if (!shoppingCart.contains(e.target) && e.target !== cartBtn) {
-            shoppingCart.classList.remove('active');
-        }
-        if (!navbar.contains(e.target) && e.target !== menuBtn) {
-            navbar.classList.remove('active');
-        }
-    });
+    }
 
-    // Ngăn chặn đóng popup khi click bên trong
-    loginPopup.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-    searchForm.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-    shoppingCart.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-    navbar.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
+
+
+    function bindRemoveItemEvents() {
+        // Sử dụng event delegation để xử lý cả phần tử động
+        document.addEventListener('submit', function (e) {
+            if (e.target.matches('.remove-item-form')) {
+                e.preventDefault();
+                const form = e.target;
+                const formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            showToast("Đã xoá sản phẩm khỏi giỏ hàng!");
+                            refreshCartPopup();
+                        } else {
+                            showToast("Xoá sản phẩm thất bại!", 'error');
+                        }
+                    });
+            }
+        });
+    }
+
+    function refreshCartPopup() {
+        fetch('/Cart/CartPopup')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('cart-popup-container').innerHTML = html;
+                // Không cần gọi lại setupGlobalEventListeners vì đã dùng event delegation
+            });
+    }
+
+    function setupGlobalEventListeners() {
+        // Sử dụng event delegation cho tất cả các nút toggle
+        document.addEventListener('click', function (e) {
+            const menuBtn = e.target.closest('#menu-btn');
+            const searchBtn = e.target.closest('#search-btn');
+            const cartBtn = e.target.closest('#cart-btn');
+            const loginBtn = e.target.closest('#login-btn');
+
+            if (menuBtn) {
+                togglePopup('.navbar');
+            } else if (searchBtn) {
+                togglePopup('.search-form');
+            } else if (cartBtn) {
+                togglePopup('.shopping-cart');
+            } else if (loginBtn) {
+                togglePopup('.login-form');
+            }
+        });
+
+        // Đóng các popup khi click ra ngoài
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.navbar') && !e.target.closest('#menu-btn')) {
+                document.querySelector('.navbar')?.classList.remove('active');
+            }
+            if (!e.target.closest('.search-form') && !e.target.closest('#search-btn')) {
+                document.querySelector('.search-form')?.classList.remove('active');
+            }
+            if (!e.target.closest('.shopping-cart') && !e.target.closest('#cart-btn')) {
+                document.querySelector('.shopping-cart')?.classList.remove('active');
+            }
+            if (!e.target.closest('.login-form') && !e.target.closest('#login-btn')) {
+                document.querySelector('.login-form')?.classList.remove('active');
+            }
+        });
+    }
+
+    function togglePopup(selector) {
+        // Tắt tất cả popup trước khi bật cái mới
+        document.querySelectorAll('.navbar, .search-form, .shopping-cart, .login-form').forEach(el => {
+            el.classList.remove('active');
+        });
+
+        // Bật popup được chọn
+        const popup = document.querySelector(selector);
+        if (popup) {
+            popup.classList.add('active');
+        }
+    }
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.style.cssText = `
+        background-color: ${type === 'success' ? '#28a745' : '#dc3545'};
+        color: white;
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+    `;
+        document.getElementById('toast-container').appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 500);
+        }, 2000);
+    }
+
 });

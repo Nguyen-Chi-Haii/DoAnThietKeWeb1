@@ -1,0 +1,35 @@
+﻿@model DoAnThietKeWeb1.Models.Cart
+
+<div class="shopping-cart">
+    @if (Model != null && Model.CartItems.Any())
+    {
+        foreach (var item in Model.CartItems)
+        {
+            <div class="box">
+                <form asp-action="RemoveItem" asp-controller="Cart" method="post"
+                      class="remove-item-form" style="display:inline;">
+                    <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                    <button type="submit" style="border:none; background:none;" title="Xoá sản phẩm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </form>
+
+
+                <img src="@item.Product?.Image" alt="Product Image">
+                <div class="content">
+                    <h3>@item.Product?.ProductName</h3>
+                    <span class="quantity">@item.Quantity</span>
+                    <span class="multiply">x</span>
+                    <span class="price">@item.Product?.Price.ToString("C0")</span>
+                </div>
+            </div>
+        }
+
+        <h3 class="total">total : <span>@ViewBag.CartTotal.ToString("C0")</span></h3>
+        <a asp-controller="Cart" asp-action="CartIndex" class="btn">checkout cart</a>
+    }
+    else
+    {
+        <h3 class="empty">Your cart is empty</h3>
+    }
+</div>
