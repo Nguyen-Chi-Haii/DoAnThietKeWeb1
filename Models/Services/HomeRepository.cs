@@ -12,10 +12,10 @@ namespace DoAnThietKeWeb1.Models.Services
         }
         public IEnumerable<Product> GetTrendingProducts()
         {
-           
             return _context.Products
                 .Where(p => p.Trending == true)
-                .Take(3) 
+                .OrderBy(p => Guid.NewGuid()) // Sắp xếp ngẫu nhiên
+                .Take(3)
                 .ToList();
         }
     }

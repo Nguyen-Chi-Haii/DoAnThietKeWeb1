@@ -3,57 +3,54 @@
     var starCounts = ViewBag.StarCounts as Dictionary<int, int>;
     int total = ViewBag.TotalReviews ?? 0;
     double average = ViewBag.AverageRating ?? 0;
+    ViewData["Title"] = "Đánh giá - Goroco Shop";
 }
 
-
-
 <div class="heading">
-    <h1>client's review</h1>
-    <p> <a asp-controller ="Home" asp-action="HomeIndex">home >></a> review </p>
+    <h1>Đánh Giá Từ Khách Hàng</h1>
+    <p> <a asp-controller="Home" asp-action="HomeIndex">Trang Chủ >></a> Đánh Giá </p>
 </div>
 
 <section class="info-container">
-
     <div class="info">
         <img src="~/image/icon-1.png" alt="">
         <div class="content">
-            <h3>fast delivery</h3>
-            <span>within 30 minutes</span>
+            <h3>Giao Hàng Nhanh</h3>
+            <span>Trong vòng 30 phút</span>
         </div>
     </div>
 
     <div class="info">
         <img src="~/image/icon-2.png" alt="">
         <div class="content">
-            <h3>24 / 7 available</h3>
-            <span>call us anytime</span>
+            <h3>Hỗ Trợ 24/7</h3>
+            <span>Gọi bất cứ lúc nào</span>
         </div>
     </div>
 
     <div class="info">
         <img src="~/image/icon-3.png" alt="">
         <div class="content">
-            <h3>easy payments</h3>
-            <span>cash or credits</span>
+            <h3>Thanh Toán Dễ Dàng</h3>
+            <span>Tiền mặt hoặc thẻ</span>
         </div>
     </div>
-
 </section>
 
-    <div class="container">
+<div class="container">
     <div class="review-summary">
         <div class="summary-header">
             <div class="average-rating">
                 @average.ToString("0.0") <span style="font-size: 1.5rem">/5</span>
             </div>
             <div class="rating-distribution">
-                @foreach (var star in starCounts.Keys)
+                @foreach (var star in starCounts.Keys.OrderByDescending(k => k))
                 {
                     var count = starCounts[star];
                     var percent = total > 0 ? (double)count / total * 100 : 0;
 
                     <div class="distribution-bar">
-                        <div class="star-label">@star sao</div>
+                        <div class="star-label">@star Sao</div>
                         <div class="bar-container">
                             <div class="bar-fill" style="width: @percent.ToString("0")%; background-color: #ffc107; height: 8px;"></div>
                         </div>
@@ -64,20 +61,20 @@
         </div>
     </div>
 
-        <div class="filter-bar">
-            <span class="filter-title">Lọc đánh giá:</span>
-            <span class="filter-option active">Tất cả</span>
-            <span class="filter-option">5 sao</span>
-            <span class="filter-option">4 sao</span>
-            <span class="filter-option">3 sao</span>
-            <span class="filter-option">Có bình luận</span>
-        </div>
+    <div class="filter-bar">
+        <span class="filter-title">Lọc Đánh Giá:</span>
+        <span class="filter-option active">Tất Cả</span>
+        <span class="filter-option">5 Sao</span>
+        <span class="filter-option">4 Sao</span>
+        <span class="filter-option">3 Sao</span>
+        <span class="filter-option">Có Bình Luận</span>
+    </div>
 
     <div class="reviews-container">
         @if (Model == null || !Model.Any())
         {
             <div class="Noreview">
-                Chưa có đánh giá nào cho từ khách hàng này.
+                Chưa Có Đánh Giá Nào Từ Khách Hàng Này.
             </div>
         }
         else
@@ -93,7 +90,7 @@
                                 <img src="~/image/pic-3.png" alt="Avatar">
                             </div>
                             <div class="user-name-and-details">
-                                <h3 class="username">Người dùng ẩn danh</h3>
+                                <h3 class="username">Người Dùng Ẩn Danh</h3>
                                 <div class="review-date">@review.ReviewDate?.ToString("dd/MM/yyyy")</div>
                                 <div class="rating">
                                     <div class="stars">
@@ -120,14 +117,15 @@
                             @review.Comment
                         </p>
                     </div>
-                     <a href="@Url.Action("Details", "Product", new { id = review.Product.ProductId })" class="product-link">
-                        Xem sản phẩm: @review.Product.ProductName
-                      </a>
+                    <a href="@Url.Action("Details", "Product", new { id = review.Product.ProductId })" class="product-link">
+                        Xem Sản Phẩm: @review.Product.ProductName
+                    </a>
                 </div>
             }
         }
     </div>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const filterOptions = document.querySelectorAll('.filter-option');

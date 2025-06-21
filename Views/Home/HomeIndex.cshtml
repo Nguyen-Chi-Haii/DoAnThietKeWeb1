@@ -1,13 +1,17 @@
 ﻿@model IEnumerable<DoAnThietKeWeb1.Models.Product>
+@{
+    ViewData["Title"] = "Trang chủ - Goroco Shop";
+}
+
 <section class="home">
 
     <div class="slides-container">
 
         <div class="slide active">
             <div class="content">
-                <span>fresh and organic</span>
-                <h3>upto 50% off</h3>
-                <a href="#" class="btn">shop now</a>
+                <span>Tươi ngon & tự nhiên</span>
+                <h3>Giảm giá đến 17%</h3>
+                <a href="/Shop" class="btn">Mua ngay</a>
             </div>
             <div class="image">
                 <img src="~/image/home-img-1.png" alt="">
@@ -16,9 +20,9 @@
 
         <div class="slide">
             <div class="content">
-                <span>fresh and organic</span>
-                <h3>upto 50% off</h3>
-                <a href="#" class="btn">shop now</a>
+                <span>Sạch sẽ & an toàn</span>
+                <h3>Ưu đãi lên đến 10%</h3>
+                <a href="/Shop" class="btn">Mua ngay</a>
             </div>
             <div class="image">
                 <img src="~/image/home-img-2.png" alt="">
@@ -27,9 +31,9 @@
 
         <div class="slide">
             <div class="content">
-                <span>fresh and organic</span>
-                <h3>upto 50% off</h3>
-                <a href="#" class="btn">shop now</a>
+                <span>Uy tín & chất lượng</span>
+                <h3>Siêu khuyến mãi 7%</h3>
+                <a href="Shop" class="btn">Mua ngay</a>
             </div>
             <div class="image">
                 <img src="~/image/home-img-3.png" alt="">
@@ -43,9 +47,10 @@
 
 </section>
 
+
 <section class="products">
 
-    <h1 class="title"> our <span>products</span> </h1>
+    <h1 class="title"> Sản phẩm <span>nổi bật</span> </h1>
 
     <div class="box-container">
         @foreach (var product in Model)
@@ -55,16 +60,16 @@
                     <a asp-controller="Cart"
                        asp-action="AddToCart"
                        asp-route-productId="@product.ProductId"
-                       class="add-to-cart">
+                       class="add-to-cart"
+                       title="Thêm vào giỏ hàng">
                         <i class="fas fa-shopping-cart"></i>
                     </a>
 
-
-                    <a href="#" class="fas fa-heart"></a>
-                    <a asp-controller="Shop" asp-action="Shopdetail" asp-route-id="@product.ProductId" class="fas fa-eye"></a>
+                    <a href="#" class="fas fa-heart" title="Thêm vào yêu thích"></a>
+                    <a asp-controller="Shop" asp-action="Shopdetail" asp-route-id="@product.ProductId" class="fas fa-eye" title="Xem chi tiết"></a>
                 </div>
                 <div class="image">
-                    <img src="@product.Image" alt="@product.ProductName" />
+                    <img src="@product.Image" alt="@product.ProductName" style=" object-fit: cover; border-radius: 8px;" />
                 </div>
                 <div class="content">
                     <h3>@product.ProductName</h3>

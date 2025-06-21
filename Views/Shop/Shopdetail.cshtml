@@ -1,5 +1,7 @@
 ﻿@model DoAnThietKeWeb1.Models.Product  
-
+@{  
+    ViewData["Title"] = "Chi tiết sản phẩm - " + Model.ProductName;  
+}
 <div class="product-detail"> 
     <div class="product-image">  
         <img src="@Model.Image" alt="@Model.ProductName" />  

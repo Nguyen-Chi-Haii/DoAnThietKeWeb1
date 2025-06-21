@@ -1,27 +1,27 @@
-﻿ <header class="header">
+﻿<header class="header">
 
-        <a asp-controller ="Home" asp-action="HomeIndex" class="logo"> <i class="fas fa-shopping-basket"></i> groco </a>
+    <a asp-controller="Home" asp-action="HomeIndex" class="logo">
+        <i class="fas fa-shopping-basket"></i> Groco
+    </a>
 
-        <nav class="navbar">
-            <a asp-controller ="Home" asp-action="HomeIndex">home</a>
-            <a asp-controller ="Shop" asp-action="ShopIndex">shop</a>
-            <a asp-controller ="About" asp-action="AboutIndex">about</a>
-            <a asp-controller ="Review" asp-action="ReviewIndex">review</a>
-            <a asp-controller ="Blog" asp-action="BlogIndex">blog</a>
-            <a asp-controller ="Contact" asp-action="ContactIndex">contact</a>
-        </nav>
+    <nav class="navbar">
+        <a asp-controller="Home" asp-action="HomeIndex">Trang Chủ</a>
+        <a asp-controller="Shop" asp-action="ShopIndex">Cửa Hàng</a>
+        <a asp-controller="About" asp-action="AboutIndex">Giới Thiệu</a>
+        <a asp-controller="Review" asp-action="ReviewIndex">Đánh Giá</a>
+        <a asp-controller="Blog" asp-action="BlogIndex">Bài Viết</a>
+        <a asp-controller="Contact" asp-action="ContactIndex">Liên Hệ</a>
+    </nav>
 
     <div class="icons">
         <div id="menu-btn" class="fas fa-bars"></div>
         <div id="search-btn" class="fas fa-search"></div>
-        <div id="cart-btn" class="fas fa-shopping-cart">
-        </div>
+        <div id="cart-btn" class="fas fa-shopping-cart"></div>
         <div id="login-btn" class="fas fa-user"></div>
-        
     </div>
 
     <form action="" class="search-form">
-        <input type="search" placeholder="search here..." id="search-box">
+        <input type="search" placeholder="Tìm kiếm tại đây..." id="search-box">
         <label for="search-box" class="fas fa-search"></label>
     </form>
 
@@ -32,15 +32,15 @@
     <div class="login-form">
         <div class="form-tabs">
             <a href="/Account/Login" class="tab-link">
-                <i class="fas fa-sign-in-alt"></i> <span>Đăng nhập</span>
+                <i class="fas fa-sign-in-alt"></i> <span>Đăng Nhập</span>
             </a>
 
             <div class="divider">
-                <span>HOẶC</span>
+                <span>Hoặc</span>
             </div>
 
             <a href="/Account/Register" class="tab-link">
-                <i class="fas fa-user-plus"></i> <span>Đăng ký</span>
+                <i class="fas fa-user-plus"></i> <span>Đăng Ký</span>
             </a>
         </div>
     </div>

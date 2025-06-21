@@ -1,38 +1,43 @@
 ﻿@model IEnumerable<DoAnThietKeWeb1.Models.Product>
+@{
+    ViewData["Title"] = "Cửa Hàng - Goroco Shop";
+}
+}
+
 <div class="heading">
-    <h1>our shop</h1>
-    <p> <a asp-controller ="Home" asp-action="HomeIndex">home >></a> shop </p>
+    <h1>Cửa Hàng Của Chúng Tôi</h1>
+    <p> <a asp-controller="Home" asp-action="HomeIndex">Trang Chủ >></a> Cửa Hàng </p>
 </div>
 
 <section class="category">
 
-    <h1 class="title"> our <span>category</span> <a href="#">view all >></a> </h1>
+    <h1 class="title"> Danh Mục <span>Sản Phẩm</span> <a href="#">Xem Tất Cả >></a> </h1>
 
     <div class="box-container">
 
         <a asp-controller="Shop" asp-action="ShopCategory" asp-route-category="Trái cây" class="box">
             <img src="~/image/cat-1.png" alt="">
-            <h3>fresh fruits</h3>
+            <h3>Trái Cây Tươi</h3>
         </a>
 
         <a asp-controller="Shop" asp-action="ShopCategory" asp-route-category="Rau củ" class="box">
             <img src="~/image/cat-2.png" alt="">
-            <h3>vegetables</h3>
+            <h3>Rau Củ</h3>
         </a>
 
         <a asp-controller="Shop" asp-action="ShopCategory" asp-route-category="Gia vị" class="box">
             <img src="~/image/cat-3.png" alt="">
-            <h3>organic spices</h3>
+            <h3>Gia Vị Hữu Cơ</h3>
         </a>
 
         <a asp-controller="Shop" asp-action="ShopCategory" asp-route-category="Thịt" class="box">
             <img src="~/image/cat-4.png" alt="">
-            <h3>fresh meat</h3>
+            <h3>Thịt Tươi</h3>
         </a>
 
         <a asp-controller="Shop" asp-action="ShopCategory" asp-route-category="Hạt" class="box">
             <img src="~/image/cat-5.png" alt="">
-            <h3>organic wheat</h3>
+            <h3>Ngũ Cốc Hữu Cơ</h3>
         </a>
 
     </div>
@@ -41,7 +46,7 @@
 
 <section class="products">
 
-    <h1 class="title"> our <span>products</span> <a href="#">view all >></a> </h1>
+    <h1 class="title"> Sản Phẩm <span>Mới Nhất</span> <a href="#">Xem Tất Cả >></a> </h1>
 
     <div class="box-container">
         @foreach (var product in Model)
@@ -82,3 +87,4 @@
     </div>
 
 </section>
+v
