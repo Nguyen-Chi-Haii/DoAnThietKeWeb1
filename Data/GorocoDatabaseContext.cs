@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using DoAnThietKeWeb1.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DoAnThietKeWeb1.Data;
 
-public partial class GorocoDatabaseContext : DbContext
+public partial class GorocoDatabaseContext : IdentityDbContext
 {
     public GorocoDatabaseContext()
     {
@@ -227,6 +228,8 @@ public partial class GorocoDatabaseContext : DbContext
         });
 
         OnModelCreatingPartial(modelBuilder);
+        base.OnModelCreating(modelBuilder);
+
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

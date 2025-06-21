@@ -1,4 +1,8 @@
-﻿<header class="header">
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<header class="header">
 
     <a asp-controller="Home" asp-action="HomeIndex" class="logo">
         <i class="fas fa-shopping-basket"></i> Groco
@@ -17,7 +21,14 @@
         <div id="menu-btn" class="fas fa-bars"></div>
         <div id="search-btn" class="fas fa-search"></div>
         <div id="cart-btn" class="fas fa-shopping-cart"></div>
-        <div id="login-btn" class="fas fa-user"></div>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div id="login-btn" class="fas fa-user" data-type="account"></div>
+        }
+        else
+        {
+            <div id="login-btn" class="fas fa-user" data-type="login"></div>
+        }
     </div>
 
     <form action="" class="search-form">
@@ -29,9 +40,9 @@
         @await Component.InvokeAsync("Cart")
     </div>
 
-    <div class="login-form">
+    <div class="login-form" data-type="login">
         <div class="form-tabs">
-            <a href="/Account/Login" class="tab-link">
+            <a href="/Identity/Account/Login" class="tab-link">
                 <i class="fas fa-sign-in-alt"></i> <span>Đăng Nhập</span>
             </a>
 
@@ -39,10 +50,28 @@
                 <span>Hoặc</span>
             </div>
 
-            <a href="/Account/Register" class="tab-link">
+            <a href="/Identity/Account/Register" class="tab-link">
                 <i class="fas fa-user-plus"></i> <span>Đăng Ký</span>
             </a>
         </div>
     </div>
+    <div class="login-form" data-type="account">
+        <div class="form-tabs">
+            <a href="/Identity/Account/Manage" class="tab-link">
+                <i class="fas fa-user-cog"></i> <span>Thông Tin Cá Nhân</span>
+            </a>
+            <a href="/Invoice/UserInvoices" class="tab-link">
+                <i class="fas fa-box"></i> <span>Đơn Hàng</span>
+            </a>
+            <form method="post" action="/Identity/Account/Logout" >
+                @Html.AntiForgeryToken()
+                <button type="submit" class="tab-link" style="border: none; background: none; color: inherit; width: 100%; text-align: left;">
+                    <i class="fas fa-sign-out-alt"></i> <span>Đăng Xuất</span>
+                </button>
+            </form>
+
+        </div>
+    </div>
+
 
 </header>

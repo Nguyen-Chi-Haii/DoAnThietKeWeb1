@@ -125,7 +125,12 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (cartBtn) {
                 togglePopup('#cart-popup-container');
             } else if (loginBtn) {
-                togglePopup('.login-form');
+                const type = loginBtn.dataset.type; // "login" hoặc "account"
+                if (type === 'login') {
+                    togglePopup('.login-form[data-type="login"]');
+                } else if (type === 'account') {
+                    togglePopup('.login-form[data-type="account"]');
+                }
             }
         });
 
@@ -140,8 +145,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!e.target.closest('#cart-popup-container') && !e.target.closest('#cart-btn')) {
                 document.querySelector('#cart-popup-container')?.classList.remove('active');
             }
-            if (!e.target.closest('.login-form') && !e.target.closest('#login-btn')) {
-                document.querySelector('.login-form')?.classList.remove('active');
+            if (
+                !e.target.closest('.login-form') &&
+                !e.target.closest('#login-btn')
+            ) {
+                document.querySelectorAll('.login-form').forEach(el => el.classList.remove('active'));
             }
         });
     }
@@ -158,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
             popup.classList.add('active');
         }
     }
+
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.textContent = message;

@@ -4,6 +4,7 @@ using DoAnThietKeWeb1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoAnThietKeWeb1.Migrations
 {
     [DbContext(typeof(GorocoDatabaseContext))]
-    partial class GorocoDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250621145608_AddIdentity")]
+    partial class AddIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -545,15 +548,6 @@ namespace DoAnThietKeWeb1.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("DoAnThietKeWeb1.Models.Cart", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("DoAnThietKeWeb1.Models.CartItem", b =>
                 {
                     b.HasOne("DoAnThietKeWeb1.Models.Cart", "Cart")
@@ -578,24 +572,7 @@ namespace DoAnThietKeWeb1.Migrations
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK__Favorites__Produ__52593CB8");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DoAnThietKeWeb1.Models.Invoice", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DoAnThietKeWeb1.Models.InvoiceDetail", b =>
@@ -622,13 +599,7 @@ namespace DoAnThietKeWeb1.Migrations
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK__Reviews__Product__44FF419A");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Product");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

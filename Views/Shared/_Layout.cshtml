@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="~/css/cart_style.css">
     <link rel="stylesheet" href="~/css/shop-detail.css">
     <link rel="stylesheet" href="~/css/review.css">
+    <link rel="stylesheet" href="~/css/identity_style.css">
 
 </head>
 <body>
@@ -42,5 +43,6 @@
     <!-- custom css file link  -->
     <script src="~/js/script.js"></script>
     <script src="~/js/cart-checkout.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
