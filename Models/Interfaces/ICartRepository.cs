@@ -20,6 +20,6 @@
         Task<decimal> GetCartTotalAsync();
 
         // Xử lý thanh toán (chuyển đổi giỏ hàng thành đơn hàng)
-        Task CheckoutAsync(string userId);
+        Task CheckoutAsync(string userId, ViewModel.CheckoutViewModel model);
     }
 }

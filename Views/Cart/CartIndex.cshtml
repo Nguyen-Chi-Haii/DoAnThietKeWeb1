@@ -65,51 +65,52 @@
                 </div>
             </div>
               <!-- Form thông tin người nhận -->
-            <div class="shipping-form">
+            <form asp-action="Checkout" method="post" class="shipping-form">
+                @Html.AntiForgeryToken()
+
                 <h3 class="form-title"><i class="fas fa-truck me-2"></i>Thông Tin Người Nhận</h3>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Họ và tên</label>
-                        <input type="text" class="form-control" placeholder="Nguyễn Văn A">
+                        <input type="text" name="FullName" class="form-control" placeholder="Nguyễn Văn A" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Số điện thoại</label>
-                        <input type="tel" class="form-control" placeholder="0912 345 678">
+                        <input type="tel" name="Phone" class="form-control" placeholder="0912 345 678" required>
                     </div>
                     <div class="col-12 mb-3">
                         <label class="form-label">Địa chỉ nhận hàng</label>
-                        <input type="text" class="form-control" placeholder="Số nhà, đường">
+                        <input type="text" name="Address" class="form-control" placeholder="Số nhà, đường" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label" style="font-size:1.8rem">Tỉnh/Thành phố</label>
-                        <select id="province" class="form-select" style="font-size:1.5rem">
+                        <select id="province" name="Province" class="form-select" style="font-size:1.5rem" required>
                             <option selected disabled>Đang tải...</option>
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label" style="font-size:1.8rem">Quận/Huyện</label>
-                        <select id="district" class="form-select" style="font-size:1.5rem">
+                        <select id="district" name="District" class="form-select" style="font-size:1.5rem" required>
                             <option selected disabled>Chọn tỉnh trước</option>
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label" style="font-size:1.8rem">Phường/Xã</label>
-                        <select id="ward" class="form-select" style="font-size:1.5rem">
+                        <select id="ward" name="Ward" class="form-select" style="font-size:1.5rem" required>
                             <option selected disabled>Chọn quận trước</option>
                         </select>
                     </div>
-
                     <div class="col-12 mb-3">
                         <label class="form-label">Ghi chú</label>
-                        <textarea class="form-control" rows="3" placeholder="Ghi chú thêm về đơn hàng..."></textarea>
+                        <textarea name="Note" class="form-control" rows="3" placeholder="Ghi chú thêm về đơn hàng..."></textarea>
                     </div>
                 </div>
-            </div>
-            <form asp-action="Checkout" method="post">
+
                 <button type="submit" class="checkout-btn">
                     <i class="fas fa-credit-card me-2"></i>THANH TOÁN
                 </button>
             </form>
+
         </div>
     }
     else

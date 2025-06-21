@@ -1,5 +1,6 @@
 ﻿using DoAnThietKeWeb1.Data;
 using DoAnThietKeWeb1.Models.Interfaces;
+using DoAnThietKeWeb1.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace DoAnThietKeWeb1.Models.Services
@@ -187,48 +188,45 @@ namespace DoAnThietKeWeb1.Models.Services
         }
 
         // --- Liên quan đến Thanh toán (ví dụ cơ bản) ---
-        public async Task CheckoutAsync(string userId)
+        public async Task CheckoutAsync(string? userId, CheckoutViewModel model)
         {
-            // Tại đây, bạn thường sẽ:
-            // 1. Tạo một bản ghi Order.
-            // 2. Chuyển các CartItem sang OrderItem.
-            // 3. Xóa giỏ hàng của người dùng.
-            // 4. Xử lý tích hợp cổng thanh toán (ngoài phạm vi ví dụ này).
+            var cart = await GetCartAsync(userId);
+            if (!cart.CartItems.Any()) return;
 
-            var cart = await GetCartAsync(userId); // Lấy giỏ hàng hiện tại của người dùng
-
-            if (cart.CartItems.Any())
+            var invoice = new Invoice
             {
-                // Ví dụ: Tạo một bản ghi Order đơn giản
-                // Bạn sẽ cần một model Order tương tự như Cart, và OrderItem tương tự như CartItem
-                /*
-                var order = new Order
-                {
-                    OrderId = Guid.NewGuid().ToString(),
-                    UserId = userId,
-                    OrderDate = DateTime.UtcNow,
-                    TotalAmount = await GetCartTotalAsync(),
-                    // Thêm các chi tiết đơn hàng khác như địa chỉ giao hàng, trạng thái thanh toán, v.v.
-                };
-                _context.Orders.Add(order);
+                InvoiceId = Guid.NewGuid().ToString(),
+                UserId = userId,
+                CreatedDate = DateTime.Now,
+                TotalAmount = await GetCartTotalAsync(),
+                Status = "Đang xử lý",
 
-                foreach (var item in cart.CartItems)
-                {
-                    _context.OrderItems.Add(new OrderItem
-                    {
-                        OrderItemId = Guid.NewGuid().ToString(),
-                        OrderId = order.OrderId,
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        PriceAtOrder = item.Product.Price // Lưu giá tại thời điểm đặt hàng
-                    });
-                }
-                */
+                // Lưu thêm thông tin người nhận từ model
+                CustomerName = model.FullName,
+                Phone = model.Phone,
+                DeliveryAddress = $"{model.Address}, {model.Ward}, {model.District}, {model.Province}",
+            };
 
-                // Xóa giỏ hàng sau khi "thanh toán"
-                await ClearCartAsync();
-                await _context.SaveChangesAsync();
+            _context.Invoices.Add(invoice);
+
+            foreach (var item in cart.CartItems)
+            {
+                _context.InvoiceDetails.Add(new InvoiceDetail
+                {
+                    InvoiceDetailId = Guid.NewGuid().ToString(),
+                    InvoiceId = invoice.InvoiceId,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    Price = item.Product.Price,
+                    Note = null
+                });
             }
+
+            await ClearCartAsync();
+            await _context.SaveChangesAsync();
         }
+
+
+
     }
 }

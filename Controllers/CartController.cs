@@ -1,5 +1,7 @@
 ﻿using DoAnThietKeWeb1.Models;
 using DoAnThietKeWeb1.Models.Interfaces;
+using DoAnThietKeWeb1.Models.Services;
+using DoAnThietKeWeb1.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -35,8 +37,8 @@ namespace DoAnThietKeWeb1.Controllers
             return Json(new { success = true });
         }
 
-            // 3. Cập nhật số lượng sản phẩm
-            [HttpPost]
+        // 3. Cập nhật số lượng sản phẩm
+        [HttpPost]
         public async Task<IActionResult> UpdateQuantity(string cartItemId, int quantity)
         {
             await _cartService.UpdateItemQuantityAsync(cartItemId, quantity);
@@ -62,12 +64,24 @@ namespace DoAnThietKeWeb1.Controllers
 
         // 6. Thanh toán
         [HttpPost]
-        public async Task<IActionResult> Checkout()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checkout(CheckoutViewModel model)
         {
-            // Nếu bạn có đăng nhập, thay thế bằng User.Identity.Name hoặc UserID thực tế
-            var userId = User.Identity.IsAuthenticated ? User.FindFirst("UserID")?.Value : null;
-            await _cartService.CheckoutAsync(userId ?? "anonymous");
-            return RedirectToAction("CartIndex");
+            if (!ModelState.IsValid)
+            {
+                // Trả lại giỏ hàng và hiển thị lỗi nếu có
+                var cart = await _cartService.GetCartAsync();
+                ViewBag.CheckoutError = "Vui lòng điền đầy đủ thông tin người nhận.";
+                return View("Cart", cart); // hoặc return View(cart) nếu View tên giống action
+            }
+
+            // Gọi hàm lưu đơn hàng
+            await _cartService.CheckoutAsync(null, model); // truyền model chứa thông tin nhận hàng
+
+            TempData["Success"] = "Đơn hàng của bạn đã được ghi nhận!";
+            return RedirectToAction("CartIndex"); // hoặc trang xác nhận đơn hàng
         }
+
     }
 }

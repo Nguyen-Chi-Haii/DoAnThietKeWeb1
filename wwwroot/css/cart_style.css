@@ -14,8 +14,8 @@
 
 .cart-container {
     max-width: 1200px;
-    margin: 30px auto;
-    padding: 20px;
+    margin: 150px auto;
+    padding: 80px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.08);
@@ -214,7 +214,6 @@
     padding: 50px 20px;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
 }
 
     .empty-cart img {

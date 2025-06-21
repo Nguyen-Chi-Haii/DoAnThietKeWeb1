@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoAnThietKeWeb1.Migrations
 {
     [DbContext(typeof(GorocoDatabaseContext))]
-    [Migration("20250619042441_EdituserIdinReview")]
-    partial class EdituserIdinReview
+    [Migration("20250621135747_AddReceiverInfoToInvoice")]
+    partial class AddReceiverInfoToInvoice
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -183,11 +183,22 @@ namespace DoAnThietKeWeb1.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("TotalAmount")
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("UserID");
 
@@ -215,6 +226,9 @@ namespace DoAnThietKeWeb1.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("InvoiceID");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(10, 2)");
@@ -314,7 +328,6 @@ namespace DoAnThietKeWeb1.Migrations
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("UserID");
 
