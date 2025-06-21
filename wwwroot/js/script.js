@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (searchBtn) {
                 togglePopup('.search-form');
             } else if (cartBtn) {
-                togglePopup('.shopping-cart');
+                togglePopup('#cart-popup-container');
             } else if (loginBtn) {
                 togglePopup('.login-form');
             }
@@ -137,8 +137,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!e.target.closest('.search-form') && !e.target.closest('#search-btn')) {
                 document.querySelector('.search-form')?.classList.remove('active');
             }
-            if (!e.target.closest('.shopping-cart') && !e.target.closest('#cart-btn')) {
-                document.querySelector('.shopping-cart')?.classList.remove('active');
+            if (!e.target.closest('#cart-popup-container') && !e.target.closest('#cart-btn')) {
+                document.querySelector('#cart-popup-container')?.classList.remove('active');
             }
             if (!e.target.closest('.login-form') && !e.target.closest('#login-btn')) {
                 document.querySelector('.login-form')?.classList.remove('active');
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function togglePopup(selector) {
         // Tắt tất cả popup trước khi bật cái mới
-        document.querySelectorAll('.navbar, .search-form, .shopping-cart, .login-form').forEach(el => {
+        document.querySelectorAll('.navbar, .search-form, #cart-popup-container, .login-form').forEach(el => {
             el.classList.remove('active');
         });
 

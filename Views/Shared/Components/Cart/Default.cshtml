@@ -1,9 +1,14 @@
 ﻿@model DoAnThietKeWeb1.Models.Cart
-
+@{
+    var totalItems = Model.CartItems.Count;
+    var maxDisplay = 3;
+    var displayedItems = Model.CartItems.Take(maxDisplay).ToList();
+    var remainingCount = totalItems - maxDisplay;
+}
 <div class="shopping-cart">
     @if (Model != null && Model.CartItems.Any())
     {
-        foreach (var item in Model.CartItems)
+        @foreach (var item in displayedItems)
         {
             <div class="box">
                 <form asp-action="RemoveItem" asp-controller="Cart" method="post"
@@ -14,18 +19,30 @@
                     </button>
                 </form>
 
-
-                <img src="@item.Product?.Image" alt="Product Image">
+                <img src="@item.Product?.Image" alt="Product Image" style="
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-right: 20px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                ">
                 <div class="content">
                     <h3>@item.Product?.ProductName</h3>
                     <span class="quantity">@item.Quantity</span>
                     <span class="multiply">x</span>
-                    <span class="price">@item.Product?.Price.ToString("C0")</span>
+                    <span class="price">@item.Product?.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
                 </div>
             </div>
         }
+        @if (remainingCount > 0)
+        {
+            <div class="text-muted" style="margin-top: 10px; font-size:1.5rem">
+                ...và còn <strong>@remainingCount</strong> sản phẩm khác trong giỏ.
+            </div>
+        }
 
-        <h3 class="total">total : <span>@ViewBag.CartTotal.ToString("C0")</span></h3>
+        <h3 class="total">total : <span>@ViewBag.CartTotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span></h3>
         <a asp-controller="Cart" asp-action="CartIndex" class="btn">checkout cart</a>
     }
     else

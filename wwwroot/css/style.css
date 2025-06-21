@@ -95,7 +95,9 @@ section {
     .btn:hover {
         background: #222;
     }
-
+a {
+    text-decoration: none;
+}
 .header {
     position: fixed;
     top: 0;
