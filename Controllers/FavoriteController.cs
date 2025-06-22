@@ -21,6 +21,7 @@ namespace DoAnThietKeWeb1.Controllers
             var favoriteProductsList = favoriteProducts.GetFavoriteProducts(userId);
             return View(favoriteProductsList);
         }
+        [HttpGet]
         public IActionResult AddToFavorite(string productId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -31,7 +32,7 @@ namespace DoAnThietKeWeb1.Controllers
             }
 
             var updatedFavorites = favoriteProducts.AddFavoriteProducts(userId, productId);
-            return Ok();
+            return Json(new { success = true });
         }
 
         public IActionResult RemoveFromFavorite(string productId)

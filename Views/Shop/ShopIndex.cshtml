@@ -59,7 +59,10 @@
                        class="add-to-cart">
                         <i class="fas fa-shopping-cart"></i>
                     </a>
-                    <a href="#" class="fas fa-heart"></a>
+                    <a href="/Favorite/AddToFavorite?productId=@product.ProductId" class="favorite-icon">
+                        <i class="fas fa-heart" title="Thêm vào yêu thích"></i>
+                    </a>
+
                     <a asp-controller="Shop" asp-action="Shopdetail" asp-route-id="@product.ProductId" class="fas fa-eye"></a>
                 </div>
                 <div class="image">

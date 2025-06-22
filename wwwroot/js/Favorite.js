@@ -1,29 +1,13 @@
 ﻿document.addEventListener('click', function (e) {
-    const heartIcon = e.target.closest('.favorite-icon');
-    if (!heartIcon) return;
+    const heart = e.target.closest('.favorite-icon');
+    if (!heart) return;
 
-    e.preventDefault();
+    e.preventDefault(); // ngăn chuyển hướng
 
-    const productId = heartIcon.dataset.productId;
-    const isFavorited = heartIcon.classList.contains('favorited');
+    // Toggle class "favorited" để đổi màu
+    heart.classList.toggle('favorited');
 
-    const url = isFavorited
-        ? `/Favorite/RemoveFromFavorite?productId=${productId}`
-        : `/Favorite/AddToFavorite?productId=${productId}`;
-
-    fetch(url)
-        .then(res => {
-            if (res.redirected) {
-                window.location.href = res.url;
-                return;
-            }
-            if (!res.ok) throw new Error("Yêu thích thất bại");
-
-            heartIcon.classList.toggle('favorited');
-            showToast(isFavorited ? "Đã xoá khỏi yêu thích" : "Đã thêm vào yêu thích");
-        })
-        .catch(err => {
-            console.error(err);
-            showToast("Thao tác thất bại", "error");
-        });
+    // Có thể thêm hiệu ứng hoặc gọi API ở đây nếu cần
+    const isFavorited = heart.classList.contains('favorited');
+    console.log(isFavorited ? 'Đã yêu thích' : 'Đã bỏ yêu thích');
 });

@@ -28,6 +28,7 @@ namespace DoAnThietKeWeb1.Models.Services
             };
             _context.Favorites.Add(favorite);
             _context.SaveChanges();
+            return GetFavoriteProducts(userId);
 
         }
         public IEnumerable<Product> RemoveFavoriteProducts(string userId, string productId)
