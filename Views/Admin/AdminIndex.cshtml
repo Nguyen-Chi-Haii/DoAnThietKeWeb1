@@ -1,0 +1,215 @@
+﻿@{
+    ViewData["Title"] = "Thống kê bán hàng";
+    Layout = "_AdminLayout";
+
+    var monthlyProductSold = ViewBag.MonthlyProductSold as Dictionary<int, int>;
+    var monthlyRevenue = ViewBag.MonthlyRevenue as Dictionary<int, decimal>;
+    var topProducts = ViewBag.TopProducts as List<dynamic>;
+}
+
+<div class="container-fluid" style="margin-top: 40px;">
+
+    <!-- Tiêu đề -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">📊 Bảng điều khiển thống kê</h1>
+    </div>
+
+    <!-- Thẻ thống kê -->
+    <div class="row mb-4">
+
+        <!-- Tổng doanh thu -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tổng doanh thu</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        @String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", ViewBag.TotalRevenue ?? 0)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sản phẩm đã bán -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Sản phẩm đã bán</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalSoldProducts</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đơn hàng thành công -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Đơn hàng thành công</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalSuccessfulOrders</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Khách hàng mới -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Khách hàng</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Customers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tiêu đề biểu đồ -->
+    <h1 class="h4 text-gray-800 mb-4">Thống kê doanh số theo tháng</h1>
+
+    <div class="row">
+
+        <!-- Line Chart: Sản phẩm bán theo tháng -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sản phẩm bán được theo tháng</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    <hr>
+                    Biểu đồ thể hiện tổng số sản phẩm được bán theo từng tháng.
+                </div>
+            </div>
+
+            <!-- Bar Chart: Doanh thu theo tháng -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo tháng</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                    <hr>
+                    Biểu đồ thể hiện tổng doanh thu theo từng tháng trong năm.
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie Chart: Top sản phẩm -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 5 sản phẩm bán chạy</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                    <hr>
+                    Biểu đồ thể hiện 5 sản phẩm bán chạy nhất theo số lượng.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const monthLabels = [...Array(12).keys()].map(m => `Tháng ${m + 1}`);
+          // ✅ Đặt HÀM calculateYAxisMax ở đầu section Scripts
+        function calculateYAxisMax(data, tickLimit = 5) {
+            let maxData = Math.max(...data);
+            let step = Math.pow(10, Math.floor(Math.log10(maxData)));
+            let maxY = Math.ceil(maxData / step) * step;
+            while (maxY % tickLimit !== 0) {
+                maxY += step;
+            }
+            return maxY;
+        }
+
+        // ✅ Lấy dữ liệu doanh thu từ ViewBag
+        const revenueData = @Html.Raw(Json.Serialize(
+                    Enumerable.Range(1, 12).Select(m =>
+                            ViewBag.MonthlyRevenue?.ContainsKey(m) == true ? ViewBag.MonthlyRevenue[m] : 0
+                    )));
+
+    // ✅ Tính max Y động
+    const maxYAxis = calculateYAxisMax(revenueData);
+
+        // Line Chart: Sản phẩm bán theo tháng
+        new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: 'Sản phẩm bán được',
+                    data: @Html.Raw(Json.Serialize(Enumerable.Range(1, 12).Select(m => ViewBag.MonthlyProductSold?.ContainsKey(m) == true ? ViewBag.MonthlyProductSold[m] : 0))),
+                    backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                    borderColor: 'rgba(78, 115, 223, 1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            }
+        });
+
+        // Bar Chart: Doanh thu
+             new Chart(document.getElementById('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: [...Array(12).keys()].map(m => `Tháng ${m + 1}`),
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: revenueData,
+                        backgroundColor: 'rgba(28, 200, 138, 0.8)',
+                        borderColor: 'rgba(28, 200, 138, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                max: maxYAxis,
+                                callback: function (value) {
+                                    return value.toLocaleString('vi-VN') + ' ₫';
+                                }
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                                borderDash: [2],
+                                zeroLineBorderDash: [2]
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, chart) {
+                                return 'Doanh thu: ' + tooltipItem.yLabel.toLocaleString('vi-VN') + ' ₫';
+                            }
+                        }
+                    }
+                }
+            });
+        // Pie Chart: Top sản phẩm
+        new Chart(document.getElementById('pieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize((ViewBag.TopProducts as IEnumerable<dynamic>)?.Select(p => (string)p.ProductName))),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize((ViewBag.TopProducts as IEnumerable<dynamic>)?.Select(p => (int)p.TotalQuantity))),
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                    hoverOffset: 6
+                }]
+            }
+        });
+    </script>
+}

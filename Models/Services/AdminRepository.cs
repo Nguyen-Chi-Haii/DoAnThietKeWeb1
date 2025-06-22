@@ -1,0 +1,70 @@
+﻿using DoAnThietKeWeb1.Data;
+using DoAnThietKeWeb1.Models;
+using DoAnThietKeWeb1.Models.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+public class AdminRepository : IAdminRepository
+{
+    private readonly GorocoDatabaseContext _context;
+
+    public AdminRepository(GorocoDatabaseContext context)
+    {
+        _context = context;
+    }
+
+    public Dictionary<int, int> GetMonthlyProductSold(int year)
+    {
+        return _context.InvoiceDetails
+            .Where(d => d.Invoice != null && d.Invoice.CreatedDate.HasValue && d.Invoice.CreatedDate.Value.Year == year)
+            .GroupBy(d => d.Invoice.CreatedDate.Value.Month)
+            .Select(g => new { Month = g.Key, Quantity = g.Sum(x => x.Quantity ?? 0) })
+            .ToDictionary(g => g.Month, g => g.Quantity);
+    }
+
+    public Dictionary<int, decimal> GetMonthlyRevenue(int year)
+    {
+        return _context.Invoices
+            .Where(i => i.CreatedDate.HasValue && i.CreatedDate.Value.Year == year)
+            .GroupBy(i => i.CreatedDate.Value.Month)
+            .Select(g => new { Month = g.Key, Revenue = g.Sum(x => x.TotalAmount ?? 0) })
+            .ToDictionary(g => g.Month, g => g.Revenue);
+    }
+
+    public List<(string ProductName, int TotalQuantity)> GetTopProducts(int top)
+    {
+        return _context.InvoiceDetails
+            .Where(d => d.Product != null)
+            .GroupBy(d => d.Product.ProductName)
+            .Select(g => new { ProductName = g.Key, TotalQuantity = g.Sum(x => x.Quantity ?? 0) })
+            .OrderByDescending(x => x.TotalQuantity)
+            .Take(top)
+            .AsEnumerable()
+            .Select(x => (x.ProductName, x.TotalQuantity))
+            .ToList();
+    }
+
+    public decimal GetTotalRevenue(int year)
+    {
+        return _context.Invoices
+            .Where(i => i.CreatedDate.HasValue && i.CreatedDate.Value.Year == year)
+            .Sum(i => i.TotalAmount ?? 0);
+    }
+
+    public int GetTotalSoldProducts(int year)
+    {
+        return _context.InvoiceDetails
+            .Where(d => d.Invoice != null && d.Invoice.CreatedDate.HasValue && d.Invoice.CreatedDate.Value.Year == year)
+            .Sum(d => d.Quantity ?? 0);
+    }
+
+    public int GetTotalSuccessfulOrders(int year)
+    {
+        return _context.Invoices
+            .Count(i => i.Status == "Đã xác nhận" && i.CreatedDate.HasValue && i.CreatedDate.Value.Year == year);
+    }
+
+    public int GetTotalCustomers()
+    {
+        return _context.Users.Count();
+    }
+}
