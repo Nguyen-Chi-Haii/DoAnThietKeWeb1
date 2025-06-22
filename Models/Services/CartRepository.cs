@@ -205,6 +205,7 @@ namespace DoAnThietKeWeb1.Models.Services
                 CustomerName = model.FullName,
                 Phone = model.Phone,
                 DeliveryAddress = $"{model.Address}, {model.WardName}, {model.DistrictName}, {model.ProvinceName}"
+                
 ,
             };
 
@@ -219,7 +220,7 @@ namespace DoAnThietKeWeb1.Models.Services
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
                     Price = item.Product.Price,
-                    Note = null
+                    Note = model.Note,
                 });
             }
 

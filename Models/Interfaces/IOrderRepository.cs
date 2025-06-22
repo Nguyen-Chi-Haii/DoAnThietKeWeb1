@@ -4,10 +4,13 @@ namespace DoAnThietKeWeb1.Models.Interfaces
 {
     public interface IOrderRepository
     {
+        IEnumerable<Invoice> GetOrdersByUserId(string userId);
         IEnumerable<Invoice> GetPagedInvoices(string userId, int page, int pageSize);
         int GetTotalInvoiceCount(string userId);
 
         public bool CancelInvoice(string invoiceId);
+
+        IEnumerable<Invoice> GetAllInvoicesbyStatus(string userId, string status);
 
     }
 }
