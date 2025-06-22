@@ -6,21 +6,26 @@ namespace DoAnThietKeWeb1.Models.ViewModel
     {
 
 
-            [Required(ErrorMessage = "Họ và tên không được để trống")]
-            public string FullName { get; set; }
+        [Required(ErrorMessage = "Họ và tên không được để trống")]
+        public string FullName { get; set; }
 
-            [Required(ErrorMessage = "Số điện thoại không được để trống")]
-            [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
-            public string Phone { get; set; }
+        [Required(ErrorMessage = "Số điện thoại không được để trống")]
+        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+        public string Phone { get; set; }
 
-            [Required(ErrorMessage = "Địa chỉ nhận hàng không được để trống")]
-            public string Address { get; set; }
+        [Required(ErrorMessage = "Địa chỉ nhận hàng không được để trống")]
+        public string Address { get; set; }
 
-            public string? Province { get; set; }
-            public string? District { get; set; }
-            public string? Ward { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn Tỉnh/Thành phố")]
+        public string ProvinceName { get; set; }
 
-            public string? Note { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn Quận/Huyện")]
+        public string DistrictName { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng chọn Phường/Xã")]
+        public string WardName { get; set; }
+
+        public string? Note { get; set; }
 
     }
 }

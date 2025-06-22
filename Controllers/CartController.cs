@@ -64,7 +64,6 @@ namespace DoAnThietKeWeb1.Controllers
 
         // 6. Thanh toán
         [HttpPost]
-        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(CheckoutViewModel model)
         {
@@ -76,12 +75,18 @@ namespace DoAnThietKeWeb1.Controllers
                 return View("Cart", cart); // hoặc return View(cart) nếu View tên giống action
             }
 
+            // Lấy UserId nếu đã đăng nhập
+            string? userId = User.Identity != null && User.Identity.IsAuthenticated
+                ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                : null;
+
             // Gọi hàm lưu đơn hàng
-            await _cartService.CheckoutAsync(null, model); // truyền model chứa thông tin nhận hàng
+            await _cartService.CheckoutAsync(userId, model); // truyền userId và thông tin nhận hàng
 
             TempData["Success"] = "Đơn hàng của bạn đã được ghi nhận!";
-            return RedirectToAction("CartIndex"); // hoặc trang xác nhận đơn hàng
+            return RedirectToAction("CartIndex"); // hoặc chuyển đến trang xác nhận đơn hàng
         }
+
 
     }
 }

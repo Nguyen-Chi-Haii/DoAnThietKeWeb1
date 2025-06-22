@@ -23,6 +23,7 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<IAboutRepository, AboutRepository>();
 builder.Services.AddScoped<IFavoriteProducts, FavoriteProducts>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();

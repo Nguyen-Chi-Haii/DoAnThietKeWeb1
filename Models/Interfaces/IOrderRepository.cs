@@ -1,9 +1,13 @@
-﻿namespace DoAnThietKeWeb1.Models.Interfaces
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace DoAnThietKeWeb1.Models.Interfaces
 {
     public interface IOrderRepository
     {
-        IEnumerable<Invoice> GetAllInvoices();
+        IEnumerable<Invoice> GetPagedInvoices(string userId, int page, int pageSize);
+        int GetTotalInvoiceCount(string userId);
 
-        IEnumerable<Invoice> CancelInvoice(string invoiceId);
+        public bool CancelInvoice(string invoiceId);
+
     }
 }

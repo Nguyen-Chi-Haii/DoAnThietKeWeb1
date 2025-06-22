@@ -204,7 +204,8 @@ namespace DoAnThietKeWeb1.Models.Services
                 // Lưu thêm thông tin người nhận từ model
                 CustomerName = model.FullName,
                 Phone = model.Phone,
-                DeliveryAddress = $"{model.Address}, {model.Ward}, {model.District}, {model.Province}",
+                DeliveryAddress = $"{model.Address}, {model.WardName}, {model.DistrictName}, {model.ProvinceName}"
+,
             };
 
             _context.Invoices.Add(invoice);
