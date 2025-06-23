@@ -112,7 +112,8 @@ namespace DoAnThietKeWeb1.Controllers
                 Category = form["Category"],
                 Image = form["Image"],
                 Price = int.TryParse(form["Price"], out var price) ? price : 0,
-                Trending = form["Trending"] == "true"
+                Trending = form["Trending"] == "true",
+                AverageRating = 0
             };
 
             // Gọi repository để thêm vào database

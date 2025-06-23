@@ -33,6 +33,13 @@ namespace DoAnThietKeWeb1.Models.Services
         }
         public void UpdateProduct(Product product)
         {
+            if (product.AverageRating== null)
+            {
+                product.AverageRating = _context.Products
+                    .Where(p => p.ProductId == product.ProductId)
+                    .Select(p => p.AverageRating)
+                    .FirstOrDefault();
+            }
             _context.Products.Update(product);
             _context.SaveChanges();
         }
