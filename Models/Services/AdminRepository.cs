@@ -35,18 +35,21 @@ public class AdminRepository : IAdminRepository
             .ToDictionary(g => g.Month, g => g.Revenue);
     }
 
-    public List<(string ProductName, int TotalQuantity)> GetTopProducts(int top)
+    public List<ProductStat> GetTopProducts(int top)
     {
         return _context.InvoiceDetails
             .Where(d => d.Product != null)
             .GroupBy(d => d.Product.ProductName)
-            .Select(g => new { ProductName = g.Key, TotalQuantity = g.Sum(x => x.Quantity ?? 0) })
+            .Select(g => new ProductStat
+            {
+                ProductName = g.Key,
+                TotalQuantity = g.Sum(x => x.Quantity ?? 0)
+            })
             .OrderByDescending(x => x.TotalQuantity)
             .Take(top)
-            .AsEnumerable()
-            .Select(x => (x.ProductName, x.TotalQuantity))
             .ToList();
     }
+
 
     public decimal GetTotalRevenue(int year)
     {
@@ -98,4 +101,21 @@ public class AdminRepository : IAdminRepository
     {
         return await Task.FromResult(_roleManager.Roles.Select(r => r.Name!).ToList());
     }
+    public List<OrderNotification> GetRecentUnprocessedOrders(int limit = 5)
+    {
+        return _context.Invoices
+            .Where(i => i.Status == "Chưa xử lý")
+            .OrderByDescending(i => i.CreatedDate)
+            .Take(limit)
+            .Select(i => new OrderNotification
+            {
+                OrderId = i.InvoiceId,
+                UserId = i.UserId,
+                TotalAmount = i.TotalAmount,
+                CreatedAt = i.CreatedDate ?? DateTime.Now
+            })
+            .ToList();
+    }
 }
+
+

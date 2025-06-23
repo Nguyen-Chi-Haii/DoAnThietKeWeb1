@@ -35,18 +35,18 @@
 
     <div class="row">
 
-        <form action="">
+        <form asp-action="SendContact" method="post">
             <h3>Gửi Tin Nhắn Cho Chúng Tôi</h3>
             <div class="inputBox">
-                <input type="text" placeholder="Nhập tên của bạn" class="box">
-                <input type="email" placeholder="Nhập email của bạn" class="box">
+                <input name="Name" class="form-control" placeholder="Nhập họ tên của bạn" required/>
+                <input name="Email" class="form-control" placeholder="Nhập Email của bạn" required />
             </div>
             <div class="inputBox">
-                <input type="number" placeholder="Nhập số điện thoại của bạn" class="box">
-                <input type="text" placeholder="Nhập tiêu đề" class="box">
+                <input name ="Phone" class="form-control" placeholder="Nhập số điện thoại" required/>
+                 <input name="Subject" class="form-control" placeholder="Chủ đề" required />
             </div>
-            <textarea placeholder="Nội dung tin nhắn" cols="30" rows="10"></textarea>
-            <input type="submit" value="Gửi Tin Nhắn" class="btn">
+            <textarea name="Message" class="form-control" placeholder="Nội dung" required></textarea>
+            <button type="submit" class="btn btn-primary">Gửi</button>
         </form>
 
         <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.118120696384!2d108.43399327560317!3d11.966322936119179!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317112c929cbd58f%3A0x5842b98761c9e0eb!2zVHLGsOG7nW5nIMSQ4bqhaSBI4buNYyBZZXJzaW4gxJDDoCBM4bqhdA!5e0!3m2!1svi!2s!4v1748099527643!5m2!1svi!2s" allowfullscreen="" loading="lazy"></iframe>

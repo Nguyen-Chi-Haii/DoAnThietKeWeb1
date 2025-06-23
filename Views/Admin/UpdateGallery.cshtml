@@ -1,8 +1,6 @@
-﻿@model Gallery 
-@using Microsoft.AspNetCore.Mvc.Controllers  
-@{
+﻿@{
     Layout = "_AdminLayout";
-    var isEdit = !string.IsNullOrEmpty(Model?.GalleryId); // Nếu có ID → là sửa\n ảnh
+    var isEdit = !string.IsNullOrEmpty(Model?.GalleryId);
     ViewData["Title"] = isEdit ? "Chỉnh sửa ảnh" : "Thêm ảnh mới";
 }
 
@@ -11,28 +9,29 @@
 <form asp-action="@(isEdit ? "GalleryEdit" : "GalleryCreate")" method="post">
     @if (isEdit)
     {
-        <input type="hidden" asp-for="GalleryId" />
+        <input type="hidden" name="GalleryId" value="@Model.GalleryId" />
     }
+
     <div class="mb-3">
         <label>Tiêu đề ảnh</label>
-        <input asp-for="ImageName" class="form-control" />
+        <input name="ImageName" class="form-control" value="@Model?.ImageName" />
     </div>
+
     <div class="mb-3">
         <label>Đường dẫn ảnh (URL)</label>
-        <input asp-for="Path" class="form-control" id="image-url" />
+        <input name="Path" class="form-control" id="image-url" value="@Model?.Path" />
     </div>
 
     <div class="mb-3">
         <label>Ảnh xem trước:</label><br />
         <img id="preview-image"
-             src="@Model.Path"
+             src="@Model?.Path"
              style="max-height: 200px; border: 1px solid #ccc; padding: 5px;" />
     </div>
 
-
-
     <button class="btn btn-success">Lưu</button>
 </form>
+
 @section Scripts {
     <script>
         const urlInput = document.getElementById('image-url');
@@ -40,20 +39,13 @@
 
         function updatePreview() {
             const url = urlInput.value.trim();
-            if (url) {
-                previewImage.src = url;
-            } else {
-                previewImage.src = ""; // hoặc ảnh mặc định
-            }
+            previewImage.src = url || "https://via.placeholder.com/200x150?text=Chưa+có+ảnh";
         }
 
         urlInput.addEventListener('input', updatePreview);
 
-        // Xử lý ảnh lỗi nếu URL không hợp lệ
         previewImage.onerror = () => {
             previewImage.src = "https://via.placeholder.com/200x150?text=Ảnh+không+hợp+lệ";
         };
     </script>
 }
-
-

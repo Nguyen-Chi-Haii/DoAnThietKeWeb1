@@ -42,8 +42,13 @@ namespace DoAnThietKeWeb1.Models.Services
                     _context.SaveChanges();
                 }
             }
-    
-            public IEnumerable<Blog> SearchBlogs(string searchTerm)
+            
+            public void SaveChanges()
+            {
+                _context.SaveChanges();
+            }
+
+        public IEnumerable<Blog> SearchBlogs(string searchTerm)
             {
                 return _context.Blogs.Where(b => b.Title.Contains(searchTerm) || b.Content.Contains(searchTerm)).ToList();
             }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 using System.Security.Claims;
 
 namespace DoAnThietKeWeb1.Controllers
@@ -43,6 +44,7 @@ namespace DoAnThietKeWeb1.Controllers
             ViewBag.TotalSoldProducts = _adminRepository.GetTotalSoldProducts(currentYear);
             ViewBag.TotalSuccessfulOrders = _adminRepository.GetTotalSuccessfulOrders(currentYear);
             ViewBag.Customers = _adminRepository.GetTotalCustomers();
+            ViewBag.Notifications = _adminRepository.GetRecentUnprocessedOrders();
 
             return View();
         }
@@ -69,16 +71,23 @@ namespace DoAnThietKeWeb1.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditProduct(Product product)
+        public IActionResult EditProduct(IFormCollection form)
         {
-            if (ModelState.IsValid)
-            {
-                _productRepository.UpdateProduct(product);
-                return RedirectToAction("ManageProducts");
+            var product = _productRepository.GetAllProducts()
+                            .FirstOrDefault(p => p.ProductId == form["ProductId"]);
+            if (product == null) return NotFound();
 
-            }
-            return View(product);
+            product.ProductName = form["ProductName"];
+            product.Description = form["Description"];
+            product.Category = form["Category"];
+            product.Image = form["Image"];
+            product.Price = int.TryParse(form["Price"], out var price) ? price : 0;
+            product.Trending = form["Trending"] == "true";
+
+            _productRepository.UpdateProduct(product);
+            return RedirectToAction("ManageProducts");
         }
+
         [HttpGet]
         public IActionResult CreateProduct()
         {
@@ -94,28 +103,23 @@ namespace DoAnThietKeWeb1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateProduct(Product product)
+        public IActionResult CreateProduct(IFormCollection form)
         {
-            if (ModelState.IsValid)
+            var product = new Product
             {
-                 _productRepository.AddProduct(product);
-                return RedirectToAction("ManageProducts");
-            }
+                ProductName = form["ProductName"],
+                Description = form["Description"],
+                Category = form["Category"],
+                Image = form["Image"],
+                Price = int.TryParse(form["Price"], out var price) ? price : 0,
+                Trending = form["Trending"] == "true"
+            };
 
-            // 🐞 Gỡ lỗi: in ra lỗi ModelState
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                Console.WriteLine("Model Error: " + error.ErrorMessage);
-            }
+            // Gọi repository để thêm vào database
+            _productRepository.AddProduct(product);
 
-            var categories = _context.Products
-                .Where(p => !string.IsNullOrEmpty(p.Category))
-                .Select(p => p.Category)
-                .Distinct()
-                .ToList();
-
-            ViewBag.ExistingCategories = categories;
-            return View(product);
+            // Điều hướng về trang quản lý
+            return RedirectToAction("ManageProducts");
         }
         public async Task<IActionResult> ManageOrders(int page = 1)
         {
@@ -215,18 +219,27 @@ namespace DoAnThietKeWeb1.Controllers
         }
 
         [HttpPost]
-        public IActionResult GalleryCreate(Gallery model)
+        public IActionResult GalleryCreate(IFormCollection form)
         {
-            if (ModelState.IsValid)
+            var gallery = new Gallery
             {
-                model.GalleryId = _aboutRepository.GenerateNextGalleryId(); // Tạo ID tự động
-                _aboutRepository.Add(model);
-                _aboutRepository.Save();
-                return RedirectToAction("ManageGallery");
+                GalleryId = _aboutRepository.GenerateNextGalleryId(),
+                ImageName = form["ImageName"],
+                Path = form["Path"]
+            };
+
+            if (string.IsNullOrWhiteSpace(gallery.ImageName) || string.IsNullOrWhiteSpace(gallery.Path))
+            {
+                // Gán lại để hiển thị lại view
+                return View("UpdateGallery", gallery);
             }
 
-            return View("UpdateGallery", model);
+            _aboutRepository.Add(gallery);
+            _aboutRepository.Save();
+
+            return RedirectToAction("ManageGallery");
         }
+
 
         [HttpGet]
         public IActionResult GalleryEdit(string id)
@@ -237,23 +250,104 @@ namespace DoAnThietKeWeb1.Controllers
         }
 
         [HttpPost]
-        public IActionResult GalleryEdit(Gallery model)
+        public IActionResult GalleryEdit(IFormCollection form)
         {
-            if (ModelState.IsValid)
+            var gallery = _aboutRepository.GetById(form["GalleryId"]);
+            if (gallery == null) return NotFound();
+
+            gallery.ImageName = form["ImageName"];
+            gallery.Path = form["Path"];
+
+            if (string.IsNullOrWhiteSpace(gallery.ImageName) || string.IsNullOrWhiteSpace(gallery.Path))
             {
-                _aboutRepository.Update(model);
-                _aboutRepository.Save();
-                return RedirectToAction("ManageGallery");
+                return View("UpdateGallery", gallery);
             }
-            return View("UpdateGallery", model);
+
+            _aboutRepository.Update(gallery);
+            _aboutRepository.Save();
+            return RedirectToAction("ManageGallery");
         }
+
 
         [HttpPost]
         public IActionResult GalleryDelete(string id)
         {
            _aboutRepository.Delete(id);
            _aboutRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("ManageGallery");
+        }
+        public IActionResult ManageBlogs()
+        {
+            var blogs = _blogRepository.GetBlogs();
+            return View(blogs);
+        }
+
+        public IActionResult BlogCreate()
+        {
+            return View("UpdateBlog", new Blog());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult BlogCreate(IFormCollection form)
+        {
+            var blog = new Blog
+            {
+                BlogId = Guid.NewGuid().ToString(),
+                Title = form["Title"],
+                Content = form["Content"],
+                Image = form["Image"],
+                PostedDate = DateTime.Now
+            };
+
+            if (string.IsNullOrWhiteSpace(blog.Title) || string.IsNullOrWhiteSpace(blog.Content))
+            {
+                // Trả lại view nếu thiếu dữ liệu quan trọng
+                return View("UpdateBlog", blog);
+            }
+
+            _blogRepository.AddBlog(blog);
+            _blogRepository.SaveChanges();
+
+            return RedirectToAction("ManageBlogs");
+        }
+
+
+        public IActionResult BlogEdit(string id)
+        {
+            var blog = _blogRepository.GetBlogById(id);
+            return blog == null ? NotFound() : View("UpdateBlog",blog);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult BlogEdit(IFormCollection form)
+        {
+            var blog = _blogRepository.GetBlogById(form["BlogId"]);
+            if (blog == null) return NotFound();
+
+            blog.Title = form["Title"];
+            blog.Content = form["Content"];
+            blog.Image = form["Image"];
+
+            if (string.IsNullOrWhiteSpace(blog.Title) || string.IsNullOrWhiteSpace(blog.Content))
+            {
+                return View("UpdateBlog", blog);
+            }
+
+            _blogRepository.UpdateBlog(blog);
+            _blogRepository.SaveChanges();
+
+            return RedirectToAction("ManageBlogs");
+        }
+
+
+
+        public IActionResult BlogDelete(string id)
+        {
+            _blogRepository.DeleteBlog(id);
+            _blogRepository.SaveChanges();
+            return RedirectToAction("ManageBlogs");
         }
     }
 }
