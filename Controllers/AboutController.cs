@@ -1,5 +1,7 @@
 ﻿using DoAnThietKeWeb1.Data;
+using DoAnThietKeWeb1.Models;
 using DoAnThietKeWeb1.Models.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DoAnThietKeWeb1.Controllers
@@ -13,6 +15,7 @@ namespace DoAnThietKeWeb1.Controllers
             this.aboutRepository = aboutRepository;
             this.gorocoDatabaseContext = gorocoDatabaseContext;
         }
+
         public IActionResult AboutIndex()
         {
             var galleries = aboutRepository.GetGallery();

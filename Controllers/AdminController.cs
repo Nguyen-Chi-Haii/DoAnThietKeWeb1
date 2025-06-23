@@ -26,7 +26,7 @@ namespace DoAnThietKeWeb1.Controllers
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _blogRepository = blogRepository;
-            _aboutRepository = aboutRepository;
+            _aboutRepository =aboutRepository;
             _userManager = userManager;
             _roleManager = roleManager;
             _adminRepository = adminRepository;
@@ -201,7 +201,60 @@ namespace DoAnThietKeWeb1.Controllers
             TempData["Success"] = "Cập nhật vai trò thành công!";
             return RedirectToAction("UserDetails", new { id = userId });
         }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ManageGallery()
+        {
+            var galleries = _aboutRepository.GetGallery();
+            return View(galleries);
+        }
 
+        [HttpGet]
+        public IActionResult GalleryCreate()
+        {
+            return View("UpdateGallery", new Gallery());
+        }
 
+        [HttpPost]
+        public IActionResult GalleryCreate(Gallery model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.GalleryId = _aboutRepository.GenerateNextGalleryId(); // Tạo ID tự động
+                _aboutRepository.Add(model);
+                _aboutRepository.Save();
+                return RedirectToAction("ManageGallery");
+            }
+
+            return View("UpdateGallery", model);
+        }
+
+        [HttpGet]
+        public IActionResult GalleryEdit(string id)
+        {
+            var image = _aboutRepository.GetById(id);
+            if (image == null) return NotFound();
+            return View("UpdateGallery", image);
+        }
+
+        [HttpPost]
+        public IActionResult GalleryEdit(Gallery model)
+        {
+            if (ModelState.IsValid)
+            {
+                _aboutRepository.Update(model);
+                _aboutRepository.Save();
+                return RedirectToAction("ManageGallery");
+            }
+            return View("UpdateGallery", model);
+        }
+
+        [HttpPost]
+        public IActionResult GalleryDelete(string id)
+        {
+           _aboutRepository.Delete(id);
+           _aboutRepository.Save();
+            return RedirectToAction("Index");
+        }
     }
 }
+
