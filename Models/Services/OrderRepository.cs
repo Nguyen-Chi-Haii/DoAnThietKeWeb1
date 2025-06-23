@@ -12,6 +12,7 @@ namespace DoAnThietKeWeb1.Models.Services
         {
             _context = context;
         }
+       
         public IEnumerable<Invoice> GetOrdersByUserId(string userId)
         {
             return _context.Invoices
@@ -19,6 +20,15 @@ namespace DoAnThietKeWeb1.Models.Services
                 .Include(i => i.InvoiceDetails)
                     .ThenInclude(d => d.Product)
                 .Where(i => i.UserId == userId)
+                .OrderByDescending(i => i.CreatedDate)
+                .ToList();
+        }
+        public IEnumerable<Invoice> GetAllInvoices()
+        {
+            return _context.Invoices
+                .Include(i => i.User)
+                .Include(i => i.InvoiceDetails)
+                 .ThenInclude(d => d.Product)
                 .OrderByDescending(i => i.CreatedDate)
                 .ToList();
         }
@@ -60,6 +70,18 @@ namespace DoAnThietKeWeb1.Models.Services
                 .Where(i => i.UserId == userId && i.Status == status)
                 .OrderByDescending(i => i.CreatedDate)
                 .ToList();
+        }
+
+        public bool ConfirmInvoice(string invoiceId)
+        {
+            var invoice = _context.Invoices.FirstOrDefault(i => i.InvoiceId == invoiceId);
+            if (invoice != null)
+            {
+                invoice.Status = "Đã xác nhận";
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }

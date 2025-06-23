@@ -10,7 +10,11 @@ namespace DoAnThietKeWeb1.Models.Interfaces
 
         public bool CancelInvoice(string invoiceId);
 
+        public bool ConfirmInvoice(string invoiceId);
+
         IEnumerable<Invoice> GetAllInvoicesbyStatus(string userId, string status);
+
+        IEnumerable<Invoice> GetAllInvoices();
 
     }
 }

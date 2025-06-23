@@ -1,10 +1,12 @@
 ﻿using DoAnThietKeWeb1.Data;
 using DoAnThietKeWeb1.Models;
 using DoAnThietKeWeb1.Models.Interfaces;
+using DoAnThietKeWeb1.Models.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace DoAnThietKeWeb1.Controllers
 {
@@ -43,6 +45,161 @@ namespace DoAnThietKeWeb1.Controllers
             ViewBag.Customers = _adminRepository.GetTotalCustomers();
 
             return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ManageProducts()
+        {
+            var products = _productRepository.GetAllProducts().ToList();
+            ViewBag.TotalProducts = products.Count;
+            return View(products);
+        }
+        [HttpPost]
+        public IActionResult DeleteProduct(string id)
+        {
+            _productRepository.DeleteProduct(id);
+            return RedirectToAction("ManageProducts");
+        }
+        [HttpGet]
+        public IActionResult EditProduct(string id)
+        {
+            var product = _productRepository.GetAllProducts().FirstOrDefault(p => p.ProductId == id);
+            if (product == null) return NotFound();
+            return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult EditProduct(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                _productRepository.UpdateProduct(product);
+                return RedirectToAction("ManageProducts");
+
+            }
+            return View(product);
+        }
+        [HttpGet]
+        public IActionResult CreateProduct()
+        {
+            var categories = _context.Products
+           .Where(p => !string.IsNullOrEmpty(p.Category))
+           .Select(p => p.Category)
+           .Distinct()
+           .ToList();
+
+            ViewBag.ExistingCategories = categories;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateProduct(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                 _productRepository.AddProduct(product);
+                return RedirectToAction("ManageProducts");
+            }
+
+            // 🐞 Gỡ lỗi: in ra lỗi ModelState
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine("Model Error: " + error.ErrorMessage);
+            }
+
+            var categories = _context.Products
+                .Where(p => !string.IsNullOrEmpty(p.Category))
+                .Select(p => p.Category)
+                .Distinct()
+                .ToList();
+
+            ViewBag.ExistingCategories = categories;
+            return View(product);
+        }
+        public async Task<IActionResult> ManageOrders(int page = 1)
+        {
+            int pageSize = 3;
+
+            // Không lọc theo userId, lấy toàn bộ đơn hàng
+            var invoices = _orderRepository.GetAllInvoices(); // <-- Thêm hàm này vào repository
+
+            int totalInvoices = invoices.Count();
+            int totalPages = (int)Math.Ceiling((double)totalInvoices / pageSize);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            // Trả về danh sách theo trang
+            var pagedInvoices = invoices.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            return View(pagedInvoices);
+        }
+        [HttpGet]
+        public IActionResult SortAdminOrderStatus(string status, int page = 1)
+        {
+            int pageSize = 3;
+            var allInvoices = _orderRepository.GetAllInvoices();
+
+            // Đếm số lượng hóa đơn theo trạng thái
+            int totalAll = allInvoices.Count();
+            int totalPending = allInvoices.Count(i => i.Status == "Đang xử lý");
+            int totalConfirmed = allInvoices.Count(i => i.Status == "Đã xác nhận");
+            int totalCanceled = allInvoices.Count(i => i.Status == "Đã hủy");
+
+            var filteredInvoices = string.IsNullOrEmpty(status)
+                ? allInvoices
+                : allInvoices.Where(i => i.Status == status).ToList();
+
+            int count = filteredInvoices.Count();
+            int totalPages = (int)Math.Ceiling((double)count / pageSize);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.SelectedStatus = status;
+
+            ViewBag.CountAll = totalAll;
+            ViewBag.CountPending = totalPending;
+            ViewBag.CountConfirmed = totalConfirmed;
+            ViewBag.CountCanceled = totalCanceled;
+
+            var pagedInvoices = filteredInvoices
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return View("~/Views/Admin/ManageOrders.cshtml", pagedInvoices); // <- TRẢ ĐÚNG VIEW
+        }
+        [Authorize(Roles = "Admin")]
+        public IActionResult ManageUsers()
+        {
+            var users = _adminRepository.GetAllUsers();
+            return View(users);
+        }
+
+        public async Task<IActionResult> UserDetails(string id)
+        {
+            var user = await _adminRepository.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
+
+            var roles = await _adminRepository.GetUserRolesAsync(user);
+            var allRoles = await _adminRepository.GetAllRolesAsync();
+
+            ViewBag.AllRoles = allRoles;
+            ViewBag.UserRoles = roles;
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRoles(string userId, List<string> selectedRoles)
+        {
+            var user = await _adminRepository.GetUserByIdAsync(userId);
+            if (user == null) return NotFound();
+
+            await _adminRepository.UpdateUserRolesAsync(user, selectedRoles);
+            TempData["Success"] = "Cập nhật vai trò thành công!";
+            return RedirectToAction("UserDetails", new { id = userId });
         }
 
 

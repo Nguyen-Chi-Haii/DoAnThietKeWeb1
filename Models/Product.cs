@@ -19,7 +19,7 @@ public partial class Product
 
     public string? Description { get; set; }
 
-    public bool? Trending { get; set; }
+    public bool Trending { get; set; }
 
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 

@@ -61,14 +61,24 @@
         </div>
     </div>
 
-    <div class="filter-bar">
-        <span class="filter-title">Lọc Đánh Giá:</span>
-        <span class="filter-option active">Tất Cả</span>
-        <span class="filter-option">5 Sao</span>
-        <span class="filter-option">4 Sao</span>
-        <span class="filter-option">3 Sao</span>
-        <span class="filter-option">Có Bình Luận</span>
+    <div class="filter-bar d-flex justify-content-between align-items-center flex-wrap">
+        <div class="filter-options d-flex align-items-center flex-wrap gap-2">
+            <span class="filter-title">Lọc Đánh Giá:</span>
+            <span class="filter-option active">Tất Cả</span>
+            <span class="filter-option">5 Sao</span>
+            <span class="filter-option">4 Sao</span>
+            <span class="filter-option">3 Sao</span>
+            <span class="filter-option">Có Bình Luận</span>
+        </div>
+
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <a href="#" class="btn btn-primary mt-2 mt-md-0">
+                <i class="fas fa-pen mr-1"></i> Tạo đánh giá
+            </a>
+        }
     </div>
+
 
     <div class="reviews-container">
         @if (Model == null || !Model.Any())

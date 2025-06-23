@@ -79,6 +79,20 @@ namespace DoAnThietKeWeb1.Controllers
 
             return View("OrderIndex", filteredInvoices.Skip((page - 1) * pageSize).Take(pageSize).ToList());
         }
+        [HttpPost]
+        public IActionResult ConfirmInvoice(string invoiceId)
+        {
+            var result = _orderRepository.ConfirmInvoice(invoiceId);
+            if (result)
+            {
+                TempData["Success"] = "Đơn hàng đã được xác nhận.";
+            }
+            else
+            {
+                TempData["Error"] = "Không tìm thấy đơn hàng.";
+            }
+            return RedirectToAction("OrderIndex");
+        }
 
     }
 

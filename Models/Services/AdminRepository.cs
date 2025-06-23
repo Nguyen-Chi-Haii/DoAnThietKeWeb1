@@ -1,15 +1,20 @@
 ﻿using DoAnThietKeWeb1.Data;
 using DoAnThietKeWeb1.Models;
 using DoAnThietKeWeb1.Models.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 public class AdminRepository : IAdminRepository
 {
     private readonly GorocoDatabaseContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public AdminRepository(GorocoDatabaseContext context)
+    public AdminRepository(GorocoDatabaseContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
     {
         _context = context;
+        _userManager = userManager;
+        _roleManager = roleManager;
     }
 
     public Dictionary<int, int> GetMonthlyProductSold(int year)
@@ -66,5 +71,31 @@ public class AdminRepository : IAdminRepository
     public int GetTotalCustomers()
     {
         return _context.Users.Count();
+    }
+    public List<IdentityUser> GetAllUsers()
+    {
+        return _userManager.Users.ToList();
+    }
+
+    public async Task<IdentityUser?> GetUserByIdAsync(string userId)
+    {
+        return await _userManager.FindByIdAsync(userId);
+    }
+
+    public async Task<IList<string>> GetUserRolesAsync(IdentityUser user)
+    {
+        return await _userManager.GetRolesAsync(user);
+    }
+
+    public async Task UpdateUserRolesAsync(IdentityUser user, IEnumerable<string> roles)
+    {
+        var currentRoles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, currentRoles);
+        await _userManager.AddToRolesAsync(user, roles);
+    }
+
+    public async Task<List<string>> GetAllRolesAsync()
+    {
+        return await Task.FromResult(_roleManager.Roles.Select(r => r.Name!).ToList());
     }
 }

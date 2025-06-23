@@ -1,4 +1,6 @@
-﻿namespace DoAnThietKeWeb1.Models.Interfaces
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace DoAnThietKeWeb1.Models.Interfaces
 {
 
     public interface IAdminRepository
@@ -10,6 +12,12 @@
         int GetTotalSoldProducts(int year);
         int GetTotalSuccessfulOrders(int year);
         int GetTotalCustomers();
+
+        List<IdentityUser> GetAllUsers();
+        Task<IdentityUser?> GetUserByIdAsync(string userId);
+        Task<IList<string>> GetUserRolesAsync(IdentityUser user);
+        Task UpdateUserRolesAsync(IdentityUser user, IEnumerable<string> roles);
+        Task<List<string>> GetAllRolesAsync();
     }
 }
 
